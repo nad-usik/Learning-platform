@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<header class="bg-dark py-5">
+	<div class="container px-4 px-lg-5 my-5">
+		<div class="text-center text-white">
+			<h1 class="display-4 fw-bolder">Вход</h1>
+			<p class="lead fw-normal text-white-50 mb-0">Войдите в аккаунт</p>
+		</div>
+	</div>
+</header>
+<div class="container">
+	<div class="row">
+		<center>
+			<div class="col-8">
+
+				<br/><br/>
+
+				<form method="POST" action="{% url 'login' %}">
+					{% csrf_token %}
+
+					<div class="mb-3">
+
+						<input type="email" class="form-control" placeholder="name@example.com" name="email">
+
+						<div class="mb-3">
+
+							<input type="password" class="form-control" name="password">
+						</div>
+						<div class="mb-3 form-check"
+					</div>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</form>
+				<p>Нет аккаунта?</p>
+					<a href="{% url 'register' %}">Зарегестрироваться</a>
+				<br/><br/>
+				<br/><br/>
+				<br/><br/>
+				<br/><br/>
+				<br/><br/>
+				<br/><br/>
+				<br/><br/>
+			</div>
+		</center>
+	</div>
+</div>
+
+{% endblock %}
+
+
