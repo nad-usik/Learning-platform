@@ -13,27 +13,31 @@
 <div class="container">
 	<div class="row">
 		<center>
-			<div class="col-8">
+			<div class="col-5">
 
 				<br/><br/>
 
 				<form method="POST" action="{% url 'login' %}">
 					{% csrf_token %}
 
-					<div class="mb-3">
+					<div class="form-floating mb-3">
 
-						<input type="email" class="form-control" placeholder="name@example.com" name="email">
-
-						<div class="mb-3">
+						<input type="email" class="form-control" name="email">
+						<label for="floatingInput">Введите Электронную Почту</label>
+						<br/>
+						<div class="form-floating mb-3">
 
 							<input type="password" class="form-control" name="password">
+							<label for="floatingInput">Введите Пароль</label>
 						</div>
 						<div class="mb-3 form-check"
 					</div>
-					<button type="submit" class="btn btn-primary">Submit</button>
+					<br/>
+					<button type="submit" class="btn btn-primary" >Войти</button>
 				</form>
+				<br/><br/>
 				<p>Нет аккаунта?</p>
-					<a href="{% url 'register' %}">Зарегестрироваться</a>
+				<a href="{% url 'register' %}" class="btn active" role="button" aria-pressed="true">Зарегестрироваться</a>
 				<br/><br/>
 				<br/><br/>
 				<br/><br/>
