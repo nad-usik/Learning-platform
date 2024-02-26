@@ -1,8 +1,7 @@
-# from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .models import CustomUser, Profile
-
+from Teachers.models import Subjects, Teacher
 
 # from django.core.exceptions import ValidationError
 
@@ -95,3 +94,11 @@ class EmailLoginForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите Электронную Почту'}))
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Введите Пароль', 'cols': '12'}))
+
+
+class SubjectChoiceForm(forms.ModelForm):
+    subjects = forms.ModelMultipleChoiceField(queryset=Subjects.objects.all(), widget=forms.CheckboxSelectMultiple, label='Выберите предметы')
+
+    class Meta:
+        model = Teacher
+        fields = ('subjects', )

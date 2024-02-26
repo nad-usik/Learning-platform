@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'teacher_dashboard_navbar.html' %}
+
+<style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td.day {
+            text-align: left;
+        }
+
+        td.hour {
+            background-color: #f9f9f9;
+        }
+
+
+</style>
+
+<table>
+	<thead>
+	<tr>
+		<th></th>
+		<th>Monday</th>
+		<th>Tuesday</th>
+		<th>Wednesday</th>
+		<th>Thursday</th>
+		<th>Friday</th>
+		<th>Saturday</th>
+		<th>Sunday</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for hour in hours %}
+	<tr>
+		<td class="hour">{{ hour }}</td>
+		<td class="day"></td>
+		<td class="day"></td>
+		<td class="day"></td>
+		<td class="day"></td>
+		<td class="day"></td>
+		<td class="day"></td>
+		<td class="day"></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td class="hour"></td>
+		<td class="hour"></td>
+		<td class="hour"></td>
+		<td class="hour"></td>
+		<td class="hour"></td>
+		<td class="hour"></td>
+		<td class="hour"></td>
+	</tr>
+	{% endfor %}
+	</tbody>
+</table>
+<br/><br/>
+<center>
+	<a href="{% url 'add_lesson' %}" class="btn active" role="button" aria-pressed="true">Добавить время</a>
+</center>
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<br/><br/>
+
+{% endblock%}
+

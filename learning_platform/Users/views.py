@@ -1,16 +1,21 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-# from django.contrib.auth.decorators import login_required
-from .forms import SignUpForm, EmailLoginForm, ProfileForm, EditProfileForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+from .forms import SignUpForm, EmailLoginForm, ProfileForm, EditProfileForm, SubjectChoiceForm
 from .models import CustomUser, Profile
+from Students.models import Student
+from Teachers.models import Teacher, Subjects
 
 
-# from django.contrib.auth import get_user_model
-#
-# User = get_user_model()
+def is_authenticated(user):
+    if user.is_authenticated:
+        return False
+    else:
+        return True
 
 
+@user_passes_test(is_authenticated)
 def login_user(request):
     if request.method == "POST":
         form = EmailLoginForm(request.POST)
@@ -21,12 +26,19 @@ def login_user(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, ("Вы вошли в аккаунт"))
-                return redirect('/')
+                if user.role == 'student':
+                    profile = Profile.objects.get(user=request.user)
+                    return render(request, 'student_dashboard.html', {'profile': profile})
+                elif user.role == 'teacher':
+                    profile = Profile.objects.get(user=request.user)
+                    return render(request, 'teacher_dashboard.html', {'profile': profile})
+                else:
+                    return redirect('home')
             else:
-                messages.success(request, ("Ошибка! Повторите попытку"))
+                messages.error(request, ("Ошибка! Повторите попытку"))
                 return redirect('login')
         else:
-            messages.success(request, ("Ошибка! Повторите попытку"))
+            messages.error(request, ("Ошибка! Повторите попытку"))
             return redirect('login')
 
     else:
@@ -46,12 +58,19 @@ def register_user(request):
             form = SignUpForm(request.POST)
             if form.is_valid():
                 form.save()
-                email = request.POST['email']
-                password = request.POST['password1']
+                email = form.cleaned_data['email']
+                role = form.cleaned_data['role']
+                password = form.cleaned_data['password1']
                 user = authenticate(request, email=email, password=password)
                 messages.success(request, ("Вы успешно зарегестривались"))
                 login(request, user)
                 messages.success(request, ("Вы вошли в аккаунт"))
+
+                if role == 'teacher':
+                    Teacher.objects.create(user=user)
+                elif role == 'student':
+                    Student.objects.create(user=user)
+
                 return redirect('create_profile')
             else:
                 messages.success(request, ("Ошибка! Попробуйте снова"))
@@ -64,26 +83,39 @@ def register_user(request):
 
 def create_profile(request):
     if request.user.is_authenticated:
-        form = ProfileForm(request.POST, request.FILES)
+        profile_form = ProfileForm(request.POST, request.FILES)
+        subject_form = None
+        if request.user.role == 'teacher':
+            subject_form = SubjectChoiceForm(request.POST)
         if request.method == "POST":
-            if form.is_valid():
-                profile = form.save(commit=False)
+
+            if profile_form.is_valid():
+                profile = profile_form.save(commit=False)
                 profile.user = request.user
-                profile.last_name = request.POST['last_name']
-                profile.first_name = request.POST['first_name']
-                profile.second_name = request.POST['second_name']
-                profile.date_of_birth = request.POST['date_of_birth']
-                profile.gender = request.POST['gender']
-                profile.town = request.POST['town']
-                profile.phone_number = request.POST['phone_number']
-                profile.profile_photo = request.FILES['profile_photo']
+                profile.last_name = profile_form.cleaned_data['last_name']
+                profile.first_name = profile_form.cleaned_data['first_name']
+                profile.second_name = profile_form.cleaned_data['second_name']
+                profile.date_of_birth = profile_form.cleaned_data['date_of_birth']
+                profile.gender = profile_form.cleaned_data['gender']
+                profile.town = profile_form.cleaned_data['town']
+                profile.phone_number = profile_form.cleaned_data['phone_number']
+
+                if request.FILES:
+                    profile.profile_photo = request.FILES['profile_photo']
                 profile.save()
+
+                if request.user.role == 'teacher' and subject_form.is_valid():
+                    subjects = subject_form.cleaned_data['subjects']
+                    print(subjects)
+                    teacher = Teacher.objects.get(user=request.user)
+                    teacher.subject.set(subjects)
+
                 return redirect('profile')
             else:
                 messages.success(request, ("Ошибка! Попробуйте снова"))
                 return redirect('create_profile')
         else:
-            return render(request, 'create_profile.html', {'form': form})
+            return render(request, 'create_profile.html', {'profile_form': profile_form, 'subject_form': subject_form})
     else:
         return render(request, 'profile.html', {})
 
@@ -107,7 +139,7 @@ def edit_profile(request):
                 profile.save()
                 return redirect('profile')
             else:
-                messages.success(request, ("Ошибка! Попробуйте снова"))
+                messages.error(request, ("Ошибка! Попробуйте снова"))
                 return redirect('edit_profile')
         else:
             return render(request, 'edit_profile.html', {'form': form})

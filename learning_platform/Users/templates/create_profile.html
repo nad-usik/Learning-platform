@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
-
+{% include messages %}
 {% block content %}
+
+{% if messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	{% for message in messages %}
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	{% endfor %}
+</div>
+{% endif %}
 
 <div class="container">
 	<div class="row">
@@ -10,7 +19,10 @@
 				<br/><br/>
 				<form method="POST" action="{% url 'create_profile' %}" enctype="multipart/form-data">
 					{% csrf_token %}
-					{{ form.as_p }}
+					{{ profile_form.as_p }}
+					{% if subject_form %}
+        				{{ subject_form.as_p }}
+    				{% endif %}
 					<br/><br/>
 					<button type="submit" class="btn btn-secondary">Сохранить</button>
 				</form>

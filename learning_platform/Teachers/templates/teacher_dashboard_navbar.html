@@ -1,0 +1,66 @@
+<header class="bg-dark py-4">
+	<style>
+		.profile-image {
+			width: 120px;
+			height: 120px;
+			border-radius: 50%;
+			overflow: hidden;
+			margin: 0 auto;
+			margin-bottom: 10px;
+		}
+
+		.profile-image img {
+			width: 100%;
+			height: auto;
+			object-fit: cover;
+		}
+
+		.mycontainer {
+			width: 100%;
+			margin: 0 auto;
+			background-color: rgba(255, 255, 255, 0.8);
+			padding: 20px;
+		}
+
+		.mycontainer a {
+			display: inline-block;
+			margin-right: 50px;
+			text-decoration: none;
+			color: #333;
+			font-size: 16px;
+		}
+	</style>
+	<div class="container px-4">
+		<div class="row gx-5 align-items-center justify-content-center">
+			<div class="col-lg-8 col-xl-7 col-xxl-6">
+				<div class="my-3 text-center text-xl-start">
+					{% if profile.profile_photo %}
+					<center>
+						<div class="profile-image">
+							<img src="{{ profile.profile_photo.url }}" alt="Profile Image">
+						</div>
+					</center>
+					{% else %}
+					<center>
+						<h1 class="center-text display-5 fw-bolder text-white mb-2">Dashboard</h1>
+					</center>
+					{%endif%}
+				</div>
+				<center>
+					<p class="mb-0" , style="font-weight: bold; font-size: 22px; color: rgb(255, 255, 255)">
+						{{profile.first_name}} {{profile.last_name}}</p>
+				</center>
+			</div>
+		</div>
+	</div>
+</header>
+<center>
+	<div class="mycontainer">
+		<a href="{% url 'teacher_dashboard' %}">Мой день</a>
+		<a href="{% url 'teacher_calendar' %}">Календарь</a>
+		<a href="#">Задания</a>
+		<a href="#">Статистика</a>
+		<a href="#">Мои ученики</a>
+	</div>
+</center>
+

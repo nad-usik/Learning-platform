@@ -22,7 +22,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Users.apps.UserConfig',
-    'Home.apps.HomeConfig'
+    'Home.apps.HomeConfig',
+    'Students.apps.StudentConfig',
+    'Teachers.apps.TeacherConfig',
 ]
 
 # Change User model to CustomUser model

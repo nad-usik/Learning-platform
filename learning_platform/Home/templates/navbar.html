@@ -1,18 +1,27 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div class="container px-5">
-                    <a class="navbar-brand" href="index.html">Learn fast</a>
+                    {% if user.is_authenticated %}
+                        {% if user.role == 'student' %}
+                            <a class="navbar-brand" href="{% url 'student_dashboard' %}">Learn fast</a>
+                        {% elif user.role == 'teacher' %}
+                            <a class="navbar-brand" href="{% url 'teacher_dashboard' %}">Learn fast</a>
+                        {% endif %}
+                    {% else %}
+                        <a class="navbar-brand" href="{% url 'home' %}">Learn fast</a>
+                    {% endif %}
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Предметы</a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                                    <li><a class="dropdown-item" href="blog-home.html">-----</a></li>
-                                    <li><a class="dropdown-item" href="blog-post.html">-----</a></li>
-                                </ul>
-                            </li>
-                            <li class="nav-item"><a class="nav-link" href="about.html">Записаться</a></li>
-                            <li class="nav-item"><a class="nav-link" href="contact.html">О нас</a></li>
+                            {% if user.is_authenticated and user.role != 'teacher' %}
+<!--                            <li class="nav-item dropdown">-->
+<!--                                <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="{% url 'schedule' %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">Записаться</a>-->
+<!--                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">-->
+<!--                                    <li><a class="dropdown-item" href="blog-home.html">-&#45;&#45;&#45;&#45;</a></li>-->
+<!--                                    <li><a class="dropdown-item" href="blog-post.html">-&#45;&#45;&#45;&#45;</a></li>-->
+<!--                                </ul>-->
+<!--                            </li>-->
+                            <li class="nav-item"><a class="nav-link" href="{% url 'schedule' %}">Записаться</a></li>
+                            {% endif %}
                             {% if user.is_authenticated %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Профиль</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Выйти</a></li>

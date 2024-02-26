@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
-
+{% include messages %}
 {% block content %}
+{% if messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	{% for message in messages %}
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	{% endfor %}
+</div>
+{% endif %}
 
 <header class="bg-dark py-5">
 	<div class="container px-4 px-lg-5 my-5">

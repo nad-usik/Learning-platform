@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from PIL import Image
 
+
 # from django.db.models.signals import post_save
 
 # Registrate a user
@@ -16,7 +17,6 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
-
 
     def __str__(self):
         return f'{self.email}, {self.role}'
@@ -41,13 +41,14 @@ class Profile(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        img = Image.open(self.profile_photo.path)
+        if self.profile_photo:
+            img = Image.open(self.profile_photo.path)
 
-        if img.height > 400 or img.width > 400:
-            output_size = (400, 400)
-            img.thumbnail(output_size)
-            img.save(self.profile_photo.path)
-
+            if img.height > 400 or img.width > 400:
+                output_size = (400, 400)
+                img.thumbnail(output_size)
+                img.save(self.profile_photo.path)
 
     def __str__(self):
         return f'{self.last_name} , {self.first_name}'
+
