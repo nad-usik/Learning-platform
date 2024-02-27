@@ -15,7 +15,7 @@ class Teacher(models.Model):
     subject = models.ManyToManyField(Subjects)
 
     def __str__(self):
-        return f'{self.user.email}, {self.user.role}, {self.subject}'
+        return f'{self.id}, {self.user.email}'
 
 
 class LessonSlot(models.Model):
@@ -31,16 +31,6 @@ class LessonSlot(models.Model):
     def register_slot(self):
         self.is_available = False
         self.save()
-
-
-# class Records(models.Model):
-#     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-#     date = models.DateTimeField()
-#     duration = models.DurationField()
-#
-#     def __str__(self):
-#         return f'{self.teacher.user.email} - {self.student.user.email} ({self.date})'
 
 
 class Lesson(models.Model):

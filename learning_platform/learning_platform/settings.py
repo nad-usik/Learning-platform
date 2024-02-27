@@ -66,7 +66,8 @@ WSGI_APPLICATION = 'learning_platform.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "Learning_platform",
+        # "NAME": "Learning_platform",
+        "NAME": "TEST",
         "USER": "nad-usik",
         "PASSWORD": "0301usikova2003",
         "HOST": "127.0.0.1",

@@ -105,6 +105,7 @@
 				<thead>
 				<tr>
 					<th>Время</th>
+					<th>Ученик</th>
 					<th>Предмет</th>
 					<th>Продолжительность</th>
 				</tr>
@@ -112,6 +113,7 @@
 				<tbody>
 				{% for lesson in lessons %}
 				<tr>
+					<td>{% for %}{{}}</td>
 					<td>{{ lesson.date|date:"H:i" }}</td>
 					<td>{{ lesson.subject.name }}</td>
 					<td>{{ lesson.duration }}</td>

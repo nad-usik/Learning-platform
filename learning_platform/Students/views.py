@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
-from Users.models import Profile
+from Users.models import CustomUser
 from Teachers.models import Teacher, LessonSlot, Lesson
 from .models import *
 # from datetime import datetime
@@ -15,7 +15,7 @@ from django.db.models.functions import TruncDate
 def student_dashboard(request):
     student = Student.objects.get(user=request.user)
     lessons = Lesson.objects.filter(student_id=student.id).values('lesson_id')
-    profile = Profile.objects.get(user=request.user)
+    profile = CustomUser.objects.get(email=request.user.email)
     current_datetime = timezone.now()
     today_lessons = LessonSlot.objects.filter(id__in=lessons, date__date=current_datetime)
 
@@ -44,16 +44,18 @@ def student_calendar(request):
     current_datetime = timezone.now()
 
     student = Student.objects.get(user=request.user)
+    profile = CustomUser.objects.get(email=request.user.email)
     lessons = Lesson.objects.filter(student_id=student.id).values('lesson_id')
-    profile = Profile.objects.get(user=request.user)
     dates = LessonSlot.objects.filter(id__in=lessons, date__gte=current_datetime).annotate(
         date_only=TruncDate('date')).values('date_only').distinct().order_by('date_only').values_list('date_only',
                                                                                                       flat=True)
     current_lessons = LessonSlot.objects.filter(id__in=lessons, date__gte=current_datetime).order_by('date')
-    teacher_ids = current_lessons.values_list('teacher_id', flat=True)
-    teachers = Teacher.objects.filter(id__in=teacher_ids).values_list('user', flat=True).values('id', 'user')
 
-    context = {'call': 'calendar', 'lessons': current_lessons, 'dates': dates, 'teachers': teachers, 'profile': profile}
+    teacher_ids = current_lessons.values_list('teacher_id', flat=True)
+    teachers = Teacher.objects.filter(id__in=teacher_ids)
+    teacher_profile = [(teacher.id, CustomUser.objects.get(id=teacher.user_id)) for teacher in teachers]
+
+    context = {'call': 'calendar', 'lessons': current_lessons, 'dates': dates, 'teachers': teacher_profile, 'profile': profile}
 
     return render(request, 'student_dashboard.html', context)
 
@@ -92,7 +94,7 @@ def schedule(request):
         available_classes = False
         context = {'available_classes': available_classes}
     else:
-        profile = [(available_teacher, Profile.objects.get(user=Teacher.objects.get(id=available_teacher).user)) for
+        profile = [(available_teacher, CustomUser.objects.get(id=Teacher.objects.get(id=available_teacher).user_id)) for
                    available_teacher in available_teachers]
 
         print(lessons)

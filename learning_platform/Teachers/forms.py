@@ -2,11 +2,11 @@ from .models import LessonSlot, Teacher, Subjects
 from django import forms
 
 
-
 class AddForm(forms.ModelForm):
-
-    date = forms.DateTimeField(label='', widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}))
-    duration = forms.IntegerField(label='', widget=forms.TextInput(attrs={'type': 'number', 'class': 'form-control', 'placeholder': 'Продолжительность в минутах'}))
+    date = forms.DateTimeField(label='',
+                               widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}))
+    duration = forms.IntegerField(label='', widget=forms.TextInput(
+        attrs={'type': 'number', 'class': 'form-control', 'placeholder': 'Продолжительность в минутах'}))
 
     class Meta:
         model = LessonSlot
@@ -18,5 +18,7 @@ class AddForm(forms.ModelForm):
         subjects = teacher.subject.all()
         subject_choices = [(subject.id, subject.name) for subject in subjects]
 
-        self.fields['subject'] = forms.ModelChoiceField(label='', queryset=Subjects.objects.filter(id__in=[subject.id for subject in subjects]),
-                                                        widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Предмет'}))
+        self.fields['subject'] = forms.ModelChoiceField(label='', queryset=Subjects.objects.filter(
+            id__in=[subject.id for subject in subjects]),
+                                                        widget=forms.Select(
+                                                            attrs={'class': 'form-control', 'placeholder': 'Предмет'}))

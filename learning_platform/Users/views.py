@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import SignUpForm, EmailLoginForm, ProfileForm, EditProfileForm, SubjectChoiceForm
-from .models import CustomUser, Profile
+from .models import CustomUser
 from Students.models import Student
 from Teachers.models import Teacher, Subjects
 
@@ -27,10 +27,10 @@ def login_user(request):
                 login(request, user)
                 messages.success(request, ("Вы вошли в аккаунт"))
                 if user.role == 'student':
-                    profile = Profile.objects.get(user=request.user)
+                    profile = CustomUser.objects.get(email=request.user.email)
                     return render(request, 'student_dashboard.html', {'profile': profile})
                 elif user.role == 'teacher':
-                    profile = Profile.objects.get(user=request.user)
+                    profile = CustomUser.objects.get(email=request.user.email)
                     return render(request, 'teacher_dashboard.html', {'profile': profile})
                 else:
                     return redirect('home')
@@ -64,7 +64,7 @@ def register_user(request):
                 user = authenticate(request, email=email, password=password)
                 messages.success(request, ("Вы успешно зарегестривались"))
                 login(request, user)
-                messages.success(request, ("Вы вошли в аккаунт"))
+                # messages.success(request, ("Вы вошли в аккаунт"))
 
                 if role == 'teacher':
                     Teacher.objects.create(user=user)
@@ -83,15 +83,14 @@ def register_user(request):
 
 def create_profile(request):
     if request.user.is_authenticated:
-        profile_form = ProfileForm(request.POST, request.FILES)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user)
         subject_form = None
         if request.user.role == 'teacher':
-            subject_form = SubjectChoiceForm(request.POST)
+            subject_form = SubjectChoiceForm(request.POST, instance=request.user)
         if request.method == "POST":
 
             if profile_form.is_valid():
                 profile = profile_form.save(commit=False)
-                profile.user = request.user
                 profile.last_name = profile_form.cleaned_data['last_name']
                 profile.first_name = profile_form.cleaned_data['first_name']
                 profile.second_name = profile_form.cleaned_data['second_name']
@@ -106,7 +105,6 @@ def create_profile(request):
 
                 if request.user.role == 'teacher' and subject_form.is_valid():
                     subjects = subject_form.cleaned_data['subjects']
-                    print(subjects)
                     teacher = Teacher.objects.get(user=request.user)
                     teacher.subject.set(subjects)
 
@@ -122,9 +120,9 @@ def create_profile(request):
 
 def edit_profile(request):
     if request.user.is_authenticated:
-        form = EditProfileForm(instance=request.user.profile)
+        form = EditProfileForm(instance=request.user)
         if request.method == "POST":
-            form = EditProfileForm(request.POST, request.FILES, instance=request.user.profile)
+            form = EditProfileForm(request.POST, request.FILES, instance=request.user)
             if form.is_valid():
                 profile = form.save(commit=False)
                 profile.last_name = form.cleaned_data['last_name']
@@ -148,8 +146,8 @@ def edit_profile(request):
 
 
 def view_profile(request):
-    if Profile.objects.filter(user=request.user).exists():
-        profile = Profile.objects.get(user=request.user)
+    if CustomUser.objects.filter(email=request.user.email).exists():
+        profile = CustomUser.objects.get(email=request.user.email)
         return render(request, 'profile.html', {'profile': profile})
     else:
         form = ProfileForm()
