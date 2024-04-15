@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<br><br>
+<div class="container px-4 col-8">
+    <center>
+    <div class="profile-image">
+        <img src="{{ student.user.profile_photo.url }}" alt="...">
+    </div>
+    <h3>{{student.user.first_name}} {{student.user.last_name}}</h3>
+</center>
+<br><br>
+{% if assignment.checked == True %}
+
+<div class="alert alert-primary" role="alert">
+    Задание проверено!    
+</div>
+
+{% endif %}
+</div>
+<br>
+<div class="container px-4 col-8">
+    <h3>{{assignment.title}}</h3>
+    <br>
+    <p>{{assignment.content}}</p>
+    <br>
+    {% if assignment.attached_file.name or assignment.attached_image %}
+    <h5>Mатериалы:</h5>
+    <br>
+    {% if assignment.attached_file %}
+    <a href="{{ assignment.attached_file.url }}" download>
+        <button type="button" class="btn btn-outline-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
+                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+            </svg> Файл </button>
+    </a>
+    {% endif %}
+    {% if assignment.attached_image %}
+    <a href="{{ assignment.attached_image.url }}" download>
+        <button type="button" class="btn btn-outline-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
+            </svg> Изображение </button>
+    </a>
+    {% endif %}
+    {% endif %}
+    <br><br><br>
+
+    {% if assignment.handed == False and is_teacher == False %}
+    <form method="POST" action="{% url 'view_content' assignment.id %}" enctype="multipart/form-data">
+        
+        {% csrf_token %}
+    
+        {{ form.as_p }}
+        <br><br>
+        <center>
+        <button type="submit" class="btn btn-secondary">Сдать</button>
+    </center>
+    </form>
+    {% elif assignment.handed == True %}
+    <h3>Ответ</h3>
+    <p> {{assignment.response_content}} </p>
+    {% if assignment.response_file %}
+    <a href="{{ assignment.response.url }}" download>
+        <button type="button" class="btn btn-outline-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
+            <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+          </svg> Файл </button>
+    </a> 
+    <br><br><br>
+    <center>    
+    <div>
+        {% if is_teacher %}
+            {% if assignment.checked == False%}
+            <form action="{% url 'check_task' assignment.pk %}" method="POST">
+                {% csrf_token %}      
+                <button type="submit" class="btn btn-secondary">Проверить</button>
+            </form>
+            {% else %}
+                <button type="button" class="btn btn-secondary disabled">Проверить</button>
+            {% endif %}
+            
+        {% endif %}
+    </div>
+</center>
+    {% endif %}
+    {% else %}
+    <h3>Пока ответа нет</h3>
+    {% endif %}
+
+</div>
+
+<br><br>
+{% endblock %}

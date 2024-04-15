@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from Users.models import CustomUser
+from Students.models import Student
 from .forms import AddForm
 from .models import *
 from django.db.models.functions import TruncDate
@@ -14,16 +15,16 @@ def teacher_dashboard(request):
         current_datetime = timezone.now()
         profile = CustomUser.objects.get(email=request.user.email)
         teacher = Teacher.objects.get(user_id=request.user)
-        lessons = LessonSlot.objects.filter(teacher_id=teacher.id, date__date=current_datetime.date(), date__gte=current_datetime, is_available=False).order_by('date')
+        lessons = Lesson.objects.filter(teacher_id=teacher.id, date__date=current_datetime.date(), date__gte=current_datetime, is_available=False).order_by('date')
 
         if not lessons:
             any_available = False
         else:
             any_available = True
-            registered_lessons = Lesson.objects.filter(lesson_id__in=lessons)
-            student_profile = [(lesson.id, CustomUser.objects.get(id=Student.objects.get(id=lesson.student_id).user_id)) for lesson in registered_lessons]
+            # registered_lessons = Lesson.objects.filter(lesson_id__in=lessons)
+            # student_profile = [(lesson.id, CustomUser.objects.get(id=Student.objects.get(id=lesson.student_id).user_id)) for lesson in registered_lessons]
 
-        return render(request, 'teacher_dashboard.html', {'profile': profile, 'lessons': lessons, 'is_available': any_available, 'student_profile': student_profile})
+        return render(request, 'teacher_dashboard.html', {'profile': profile, 'lessons': lessons, 'is_available': any_available})
 
     else:
         return redirect('login')
@@ -37,8 +38,8 @@ def teacher_calendar(request):
     profile = CustomUser.objects.get(email=request.user.email)
     teacher = Teacher.objects.get(user_id=request.user)
     current_datetime = timezone.now()
-    dates = LessonSlot.objects.filter(teacher_id=teacher.id, date__gte=current_datetime).annotate(date_only=TruncDate('date')).values('date_only').distinct().order_by('date_only').values_list('date_only', flat=True)
-    lessons = LessonSlot.objects.filter(teacher_id=teacher.id, date__gte=current_datetime).order_by('date')
+    dates = Lesson.objects.filter(teacher_id=teacher.id, date__gte=current_datetime).annotate(date_only=TruncDate('date')).values('date_only').distinct().order_by('date_only').values_list('date_only', flat=True)
+    lessons = Lesson.objects.filter(teacher_id=teacher.id, date__gte=current_datetime).order_by('date')
 
     context = {'call': 'calendar', 'profile': profile, 'lessons': lessons, 'dates': dates}
 

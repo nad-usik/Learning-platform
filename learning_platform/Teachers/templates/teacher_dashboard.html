@@ -20,7 +20,9 @@
 
 		<div class="col-md-6">
 			<br/><br/>
+			<center>
 			<h2>Запланированные</h2>
+			</center>
 			<br/><br/>
 			<br>
 			<table class="table">
@@ -29,6 +31,7 @@
 					<th>Дата</th>
 					<th>Время</th>
 					<th>Предмет</th>
+					<th>Студент</th>
 					<th>Продолжительность</th>
 				</tr>
 				</thead>
@@ -40,6 +43,8 @@
 					<td>{{ lesson.date|date:"d F" }}</td>
 					<td>{{ lesson.date|date:"H:i" }}</td>
 					<td>{{ lesson.subject.name }}</td>
+					<td>{{ lesson.student.user.first_name }} {{ lesson.student.user.last_name }}</td>
+
 					<td>{{ lesson.duration }} минут</td>
 				</tr>
 				{% endif %}
@@ -52,7 +57,9 @@
 
 		<div class="col-md-6">
 			<br/><br/>
+			<center>
 			<h2>Доступны для записи</h2>
+			</center>
 			<br/><br/>
 			<br>
 			<table class="table">
@@ -113,8 +120,8 @@
 				<tbody>
 				{% for lesson in lessons %}
 				<tr>
-					<td>{% for %}{{}}</td>
 					<td>{{ lesson.date|date:"H:i" }}</td>
+					<td>{{ lesson.student.user.first_name }} {{ lesson.student.user.last_name }} </td>
 					<td>{{ lesson.subject.name }}</td>
 					<td>{{ lesson.duration }}</td>
 				</tr>

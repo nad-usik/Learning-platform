@@ -1,0 +1,272 @@
+{% extends 'index.html' %} {% load tz %} {% block part %}
+
+<div class="chat-history" style="height: 810px">
+  <div class="chat-header clearfix">
+    <div class="row">
+      <div class="col-lg-6">
+        <a href="javascript:void(0);" data-target="#view_info">
+          <img src="{{ profile.profile_photo.url }}" alt="avatar" />
+        </a>
+        <div class="chat-about">
+          <h6 class="m-b-0">
+            {{ profile.first_name }} {{ profile.last_name }}
+          </h6>
+          <small>Last seen: 2 hours ago</small>
+        </div>
+      </div>
+      <!--			<div class="col-lg-6 hidden-sm text-right">-->
+      <!--				<a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>-->
+      <!--				<a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>-->
+      <!--				<a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>-->
+      <!--				<a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>-->
+      <!--			</div>-->
+    </div>
+  </div>
+
+  <div
+    class="chat-history"
+    id="chat-history"
+    data-num="{{ num }}"
+    style="height: 550px"
+  >
+    <ul class="m-b-0">
+      {% for chat in chats %} 
+        {% if chat.sender == user and chat.receiver == profile %}
+      <li class="clearfix" id="sender-list">
+        <div class="message-data text-right float-right">
+          <img
+            src="{{ user.profile_photo.url }}"
+            style="margin-left: 10px"
+            alt="avatar"
+          />
+        </div>
+        <div
+          class="message other-message float-right"
+          style="position: relative"
+        >
+          {{ chat.body }}
+          <span
+            style="font-size: 9px; position: absolute; bottom: 1px; right: 1px"
+            class="message-data-time"
+            >{{ chat.time|time:"H:i" }}</span
+          >
+        </div>
+      </li>
+        {% endif %} 
+        {% if chat.sender == profile and chat.receiver == user %}
+      <li class="clearfix" id="receiver-list">
+        <div class="message-data text-left float-left">
+          <img
+            src="{{ profile.profile_photo.url }}"
+            style="margin-right: 10px"
+            alt="avatar"
+          />
+        </div>
+        <div class="message my-message float-left" style="position: relative">
+          {{ chat.body }}
+          <span
+            style="font-size: 9px; position: absolute; bottom: 1px; right: 1px"
+            class="message-data-time"
+            >{{ chat.time|time:"H:i" }}</span
+          >
+        </div>
+      </li>
+        {% endif %} 
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="chat-message clearfix">
+    <div class="input-group mb-0">
+      <form class="form-control d-flex" method="POST" id="message_form">
+        {% csrf_token %}
+        <button
+          type="submit"
+          style="margin-right: 5px"
+          class="input-group-prepend btn btn-outline-secondary"
+        >
+          <span class="input-group-text"><i class="fa fa-send"></i></span>
+        </button>
+        {{ form.body }}
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie("csrftoken");
+
+  let form = document.getElementById("message_form");
+
+  form.addEventListener("submit", sendChat);
+
+  function sendChat(e) {
+    e.preventDefault();
+    let chatMessage = document.getElementById("id_body").value;
+    // console.log(chatMessage);
+
+    const data = { msg: chatMessage };
+
+    let url = "{% url 'sent_msg' profile.id %}";
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log("Success:", data);
+        let responseData = JSON.parse(data)[0].fields;
+        // console.log(responseData)
+        let chatBody = document
+          .getElementById("chat-history")
+          .getElementsByTagName("ul")[0];
+        let chatListItem = document.createElement("li");
+        chatListItem.classList.add("clearfix");
+
+        let messageDataDiv = document.createElement("div");
+        messageDataDiv.classList.add(
+          "message-data",
+          "text-right",
+          "float-right"
+        );
+
+        let userAvatar = document.createElement("img");
+        userAvatar.src = "{{ user.profile_photo.url }}";
+        userAvatar.style.marginLeft = "10px";
+        userAvatar.alt = "avatar";
+
+        messageDataDiv.appendChild(userAvatar);
+
+        let messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", "other-message", "float-right");
+        messageDiv.innerText = responseData.body;
+
+        let timeSpan = document.createElement("span");
+
+        timeSpan.style.fontSize = "9px";
+        timeSpan.style.position = "absolute";
+        timeSpan.style.bottom = "1px";
+        timeSpan.style.right = "1px";
+        timeSpan.classList.add("message-data-time");
+        let messageTime = new Date(responseData.time);
+        let formattedTime = messageTime.toLocaleTimeString("ru-RU", {
+          hour: "numeric",
+          minute: "numeric",
+        });
+
+        timeSpan.innerText = formattedTime;
+        messageDiv.appendChild(timeSpan);
+        chatListItem.appendChild(messageDataDiv);
+        chatListItem.appendChild(messageDiv);
+
+        chatBody.appendChild(chatListItem);
+        form.reset();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  setInterval(receiveChat, 2000);
+
+  let counter = document.getElementById('chat-history').getAttribute('data-num');
+
+
+
+  function receiveChat() {
+    let url = "{% url 'receive_msg' profile.id %}";
+
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+
+        // console.log("Success:", data);
+
+        if (data.length == 0) {}
+
+        else {
+          let last_msg = data[data.length-1]
+          if (counter == data.length) {
+            // console.log("there is no new messages")
+          }
+          else {
+            let chatBody = document.getElementById("chat-history").getElementsByTagName("ul")[0];
+            let chatListItem = document.createElement("li");
+            chatListItem.classList.add("clearfix");
+
+            let messageDataDiv = document.createElement("div");
+            messageDataDiv.classList.add(
+            "message-data",
+            "text-left",
+            "float-left"
+            );
+
+            let userAvatar = document.createElement("img");
+            userAvatar.src = "{{ profile.profile_photo.url }}";
+            userAvatar.style.marginLeft = "10px";
+            userAvatar.alt = "avatar";
+
+            messageDataDiv.appendChild(userAvatar);
+
+            let messageDiv = document.createElement("div");
+            messageDiv.classList.add("message", "my-message", "float-left");
+            messageDiv.innerText = last_msg[0];
+
+            let timeSpan = document.createElement("span");
+
+            timeSpan.style.fontSize = "9px";
+            timeSpan.style.position = "absolute";
+            timeSpan.style.bottom = "1px";
+            timeSpan.style.right = "1px";
+            timeSpan.classList.add("message-data-time");
+            let messageTime = new Date(last_msg[1]);
+            let formattedTime = messageTime.toLocaleTimeString("ru-RU", {
+              hour: "numeric",
+              minute: "numeric",
+            });
+
+            timeSpan.innerText = formattedTime;
+            messageDiv.appendChild(timeSpan);
+            chatListItem.appendChild(messageDataDiv);
+            chatListItem.appendChild(messageDiv);
+
+            chatBody.appendChild(chatListItem);
+          }
+        }
+
+        counter = data.length
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  window.addEventListener('DOMContentLoaded', (event) => {
+            scrollToBottom();
+        });
+
+        function scrollToBottom() {
+            const chatContainer = document.getElementById('chat-history');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+</script>
+{% endblock %}

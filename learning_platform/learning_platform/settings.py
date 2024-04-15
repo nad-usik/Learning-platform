@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     'Home.apps.HomeConfig',
     'Students.apps.StudentConfig',
     'Teachers.apps.TeacherConfig',
+    'Chat.apps.ChatConfig',
+    'Homework.apps.HomeworkConfig'
 ]
 
 # Change User model to CustomUser model
@@ -66,8 +68,8 @@ WSGI_APPLICATION = 'learning_platform.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        # "NAME": "Learning_platform",
-        "NAME": "TEST",
+        "NAME": "Learning_platform",
+        # "NAME": "TEST",
         "USER": "nad-usik",
         "PASSWORD": "0301usikova2003",
         "HOST": "127.0.0.1",
@@ -96,10 +98,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'ru-RU'  # Установка языка на русский
 
+
+
+
+
+TIME_ZONE = 'Europe/Moscow'
+
+USE_L10N = True
 USE_I18N = True
 
 USE_TZ = True

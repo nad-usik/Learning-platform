@@ -19,7 +19,7 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-8">
 			<br/><br/>
 			<h2>Предстоящие занятия</h2>
 			<br/><br/>
@@ -35,20 +35,14 @@
 				</tr>
 				</thead>
 				<tbody>
-				{% for date in dates %}
 				{% for lesson in lessons %}
-				{% if lesson.date|date:"Y-m-d" == date|date:"Y-m-d" %}
 				<tr>
 					<td>{{ lesson.date|date:"d F" }}</td>
 					<td>{{ lesson.date|date:"H:i" }}</td>
 					<td>{{ lesson.subject.name }}</td>
 					<td>{{ lesson.duration }} минут</td>
-					{% for item in teachers %} {% if item.0 == lesson.teacher_id %}
-					<td>{{ item.1.last_name }} {{ item.1.first_name }} {% endif %} {% endfor %}</td>
+					<td>{{ lesson.teacher.user.last_name }} {{ lesson.teacher.user.first_name }} {{ lesson.teacher.user.second_name }}</td>
 				</tr>
-
-				{% endif %}
-				{% endfor %}
 				{% endfor %}
 				</tbody>
 			</table>
@@ -69,6 +63,7 @@
 	<div class="row">
 		<div class="col-md-6">
 			<br/><br/>
+			{% if plans %}
 			<h2>Запланировано на сегодня</h2>
 			<br/><br/>
 			<table class="table">
@@ -77,6 +72,7 @@
 					<th>Время</th>
 					<th>Предмет</th>
 					<th>Продолжительность</th>
+					<th>Преподаватель</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -85,13 +81,21 @@
 					<td>{{ lesson.date|date:"H:i" }}</td>
 					<td>{{ lesson.subject.name }}</td>
 					<td>{{ lesson.duration }} минут</td>
+					<td>{{ lesson.teacher.user.last_name}} {{lesson.teacher.user.first_name }} {{lesson.teacher.user.second_name}}</td>
 				</tr>
 				{% endfor %}
 				</tbody>
 			</table>
+			{% else %}
+				<h2>Нет запланированных занятий</h2>
+			{% endif %}
 		</div>
 	</div>
 </div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<center>
+	<a href="{% url 'schedule' %}" class="btn active" role="button" aria-pressed="true">Записаться на урок</a>
+</center>
 
 {% endif %}
 

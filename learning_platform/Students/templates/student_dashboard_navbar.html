@@ -58,7 +58,7 @@
 	<div class="mycontainer">
 		<a href="{% url 'student_dashboard' %}">Мой день</a>
 		<a href="{% url 'student_calendar' %}">Календарь</a>
-		<a href="#">Задания</a>
+		<a href="{% url 'view_current_tasks' student.id %}">Задания</a>
 		<a href="#">Статистика</a>
 		<a href="#">Мои преподаватели</a>
 	</div>

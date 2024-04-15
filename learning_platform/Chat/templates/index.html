@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+	body{
+    background-color: #f4f7f6;
+    
+}
+.card {
+    background: #fff;
+    transition: .5s;
+    border: 0;
+    margin-bottom: 30px;
+    border-radius: .55rem;
+    position: relative;
+    width: 100%;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+}
+.chat-app .people-list {
+    width: 280px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 20px;
+    z-index: 7
+}
+
+.chat-app .chat {
+    margin-left: 280px;
+    border-left: 1px solid #eaeaea
+}
+
+.people-list {
+    -moz-transition: .5s;
+    -o-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .5s
+}
+
+.people-list .chat-list li {
+    padding: 10px 15px;
+    list-style: none;
+    border-radius: 3px
+}
+
+.people-list .chat-list li:hover {
+    background: #efefef;
+    cursor: pointer
+}
+
+.people-list .chat-list li.active {
+    background: #efefef
+}
+
+.people-list .chat-list li .name {
+    font-size: 15px
+}
+
+.people-list .chat-list img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin: 0 auto;
+	margin-bottom: 10px;
+}
+
+.people-list img  {
+	width: 100%;
+	height: auto;
+	object-fit: cover;
+	float: left;
+}
+
+.people-list .about {
+    float: left;
+    padding-left: 8px
+}
+
+.people-list .status {
+    color: #999;
+    font-size: 13px
+}
+
+.chat .chat-header {
+    padding: 15px 20px;
+    border-bottom: 2px solid #f4f7f6
+}
+
+.chat .chat-header img {
+	object-fit: cover;
+	float: left;
+    width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin: 0 auto;
+	margin-bottom: 10px;
+}
+
+.chat .chat-header .chat-about {
+    float: left;
+    padding-left: 10px
+}
+
+.chat .chat-history {
+    padding: 20px;
+    border-bottom: 2px solid #fff;
+    overflow: auto;
+}
+
+.chat .chat-history ul {
+    padding: 0
+}
+
+.chat .chat-history ul li {
+    list-style: none;
+    margin-bottom: 30px
+}
+
+.chat .chat-history ul li:last-child {
+    margin-bottom: 0px
+}
+
+.chat .chat-history .message-data {
+    margin-bottom: 15px;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.chat .chat-history .message-data img {
+	object-fit: cover;
+    width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin: 0 auto;
+	margin-bottom: 10px;
+}
+
+.chat .chat-history .message-data-time {
+    color: #434651;
+    padding-left: 6px;
+    margin-right: 10px;
+
+}
+
+.chat .chat-history .message {
+    color: #444;
+    padding: 18px 20px;
+    line-height: 26px;
+    font-size: 16px;
+    border-radius: 7px;
+    display: inline-block;
+    position: relative;
+    max-width: 60%; 
+    word-wrap: break-word; 
+    overflow: hidden;
+    box-sizing: border-box;
+    vertical-align: top; 
+}
+
+
+.chat .chat-history .my-message {
+    background: #efefef;
+    text-align: left;
+}
+
+
+.chat .chat-history .other-message {
+    background: #e8f1f3;
+    text-align: right;
+}
+
+.chat .chat-history .other-message:after {
+    border-bottom-color: #e8f1f3;
+    left: 93%
+}
+
+.chat .chat-message {
+    padding: 20px
+}
+
+.online,
+.offline,
+.me {
+    margin-right: 2px;
+    font-size: 8px;
+    vertical-align: middle
+}
+
+.online {
+    color: #86c541
+}
+
+.offline {
+    color: #e47297
+}
+
+.me {
+    color: #1d8ecd
+}
+
+.float-right {
+    float: right
+}
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0
+}
+
+@media only screen and (max-width: 767px) {
+    .chat-app .people-list {
+        height: 465px;
+        width: 100%;
+        overflow-x: auto;
+        background: #fff;
+        left: -400px;
+        display: none
+    }
+    .chat-app .people-list.open {
+        left: 0
+    }
+    .chat-app .chat {
+        margin: 0
+    }
+    .chat-app .chat .chat-header {
+        border-radius: 0.55rem 0.55rem 0 0
+    }
+    .chat-app .chat-history {
+        height: 300px;
+        overflow-x: auto
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+    .chat-app .chat-list {
+        height: 650px;
+        overflow-x: auto
+    }
+    .chat-app .chat-history {
+        height: 600px;
+        overflow-x: auto
+    }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+    .chat-app .chat-list {
+        height: 480px;
+        overflow-x: auto
+    }
+    .chat-app .chat-history {
+        height: calc(100vh - 350px);
+        overflow-x: auto
+    }
+}
+</style>
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<br><br>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-lg-12">
+			<div class="card chat-app">
+				<div id="plist" class="people-list">
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fa fa-search"></i></span>
+						</div>
+						<input type="text" class="form-control" placeholder="Search...">
+					</div>
+					<ul class="list-unstyled chat-list mt-2 mb-0">
+						{% for user in connections %}
+						<a href="{% url 'chat_view' user.user.pk %}">
+							<li id="chat-list" class="clearfix" style="display: flex; align-items: center;">
+                                <div style="display: flex; align-items: flex-start;">
+                                <img src="{{ user.user.profile_photo.url }}" alt="avatar">
+								<div class="about" style="flex-grow: 1;">
+									<div class="name">{{ user.user.first_name }} {{ user.user.last_name }}</div>
+									<div class="status"><i class="fa fa-circle offline"></i> left 7 mins ago</div>
+                                    <!-- <div class="unread-messages">{{ unread_messages }}</div> -->
+								</div>
+                                </div>
+                                <span id="notification" class="badge text-bg-primary" style="margin-left: 25px;">0</span>
+
+							</li>
+						</a>
+						{% endfor %}
+					</ul>
+				</div>
+				<div class="chat">
+
+
+					{% block part %}
+					<div class="chat-history" style="height: 800px">
+
+						<br><br><br><br><br><br></br>
+						<center>
+							<h2>Выберите чат, чтобы начать общение!</h2>
+							<br><br><br><br><br><br>
+						</center>
+					</div>
+					{% endblock %}
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+    setInterval(get_notification, 1000)
+
+    function get_notification(){
+        let url = "{% url 'notification' %}"
+
+        fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            let notification = document.getElementsByClassName("badge")
+            for (let i = 0; i < data.length; i++) {
+                console.log("data[i]", data[i])
+                notification[i].innerText = data[i]
+            }
+        })
+        .catch(error => console.log(error))
+    }
+
+</script>
+
+{% endblock %}

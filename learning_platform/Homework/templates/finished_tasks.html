@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<br><br>
+<div class="container px-4 col-8">
+    <center>
+    <div class="profile-image">
+        <img src="{{ student.user.profile_photo.url }}" alt="...">
+    </div>
+    <h3>{{student.user.first_name}} {{student.user.last_name}}</h3>
+</center>
+<br>
+    <div class="list-group">
+        <div class="card text-center">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'view_current_tasks' student.id %}">Текущие</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="true" href="{% url 'view_finished_tasks' student.id %}">Завершенные</a>
+                  </li>
+                  {% if is_teacher %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'create_task' student.id %}">Добавить задание</a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+            <div class="card-body">
+                {% for assignment in assignments %}
+                    <h5 class="card-title">{{assignment.title}}</h5>
+                    <p class="card-text">Срок закончился {{assignment.deadline|date:"d F Y H:i"}}</p>
+                    <a href="{% url 'view_content' assignment.id %}" class="btn btn-primary">Посмотреть</a>
+                    <br><br>
+                {% endfor %}
+            </div>
+          </div>
+
+    </div>
+</div>
+<br><br><br><br>
+{% endblock %}

@@ -1,4 +1,4 @@
-from .models import LessonSlot, Teacher, Subjects
+from .models import Teacher, Subjects, Lesson
 from django import forms
 
 
@@ -9,7 +9,7 @@ class AddForm(forms.ModelForm):
         attrs={'type': 'number', 'class': 'form-control', 'placeholder': 'Продолжительность в минутах'}))
 
     class Meta:
-        model = LessonSlot
+        model = Lesson
         fields = ('subject', 'date', 'duration')
 
     def __init__(self, teacher_id, *args, **kwargs):

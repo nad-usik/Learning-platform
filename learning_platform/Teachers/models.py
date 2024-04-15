@@ -1,6 +1,7 @@
 from django.db import models
 from Users.models import CustomUser
 from Students.models import Student
+from django.utils import timezone
 
 
 class Subjects(models.Model):
@@ -18,31 +19,24 @@ class Teacher(models.Model):
         return f'{self.id}, {self.user.email}'
 
 
-class LessonSlot(models.Model):
+class Lesson(models.Model):
     subject = models.ForeignKey(Subjects, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     date = models.DateTimeField()
     duration = models.IntegerField()
     is_available = models.BooleanField(default=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
+    record_time = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.teacher} - {self.date}'
 
-    def register_slot(self):
-        self.is_available = False
-        self.save()
+    def book_lesson(self, student):
+        if self.is_available:
+            self.is_available = False
+            self.student = student
+            self.record_time = timezone.now()
+            self.save()
+            return True
+        return False
 
-
-class Lesson(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    lesson = models.ForeignKey(LessonSlot, on_delete=models.CASCADE)
-    record_time = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.student.user.email} - {self.lesson}'
-
-    @classmethod
-    def add(cls, student_id, lesson_slot):
-        lesson = cls(student=student_id, lesson=lesson_slot)
-        lesson.save()
-        return lesson

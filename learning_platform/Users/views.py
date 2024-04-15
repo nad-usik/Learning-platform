@@ -27,8 +27,9 @@ def login_user(request):
                 login(request, user)
                 messages.success(request, ("Вы вошли в аккаунт"))
                 if user.role == 'student':
+                    student = Student.objects.get(user_id=user)
                     profile = CustomUser.objects.get(email=request.user.email)
-                    return render(request, 'student_dashboard.html', {'profile': profile})
+                    return render(request, 'student_dashboard.html', {'profile': profile, 'student': student})
                 elif user.role == 'teacher':
                     profile = CustomUser.objects.get(email=request.user.email)
                     return render(request, 'teacher_dashboard.html', {'profile': profile})
