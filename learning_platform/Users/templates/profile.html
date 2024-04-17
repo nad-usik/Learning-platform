@@ -1,38 +1,99 @@
 {% extends 'base.html' %}
+{% include messages %}
+
 {% block content %}
-<div class="container">
-	<div class="row">
-		<div class="col-md-6">
-			<br/><br/>
-			<h2>Профиль пользователя</h2>
-			<br/><br/>
-			<p><strong>Фамилия:</strong> {{ profile.last_name }}</p>
-			<p><strong>Имя:</strong> {{ profile.first_name }}</p>
-			<p><strong>Отчество:</strong> {{ profile.second_name }}</p>
-			<p><strong>Дата рождения:</strong> {{ profile.date_of_birth|date:"j F Y" }}</p>
-			<p><strong>Пол:</strong> {{ profile.gender }}</p>
-			<p><strong>Город:</strong> {{ profile.town }}</p>
-			<p><strong>Номер телефона:</strong> {{ profile.phone_number }}</p>
-			<!-- Добавьте другие поля профиля, если есть -->
+
+{% if messages %}
+	{% for message in messages %}
+	<div class="alert {% if message.tags == 'error' %} alert-warning {% else %} alert-success {% endif %} alert-dismissible fade show" role="alert">
+		<strong>{{ message }}</strong>
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+	{% endfor %}
+{% endif %}
+
+
+<div class="container" style="padding: 50px;">
+	<div class="container  bg-white border border-0 border-secondary border-opacity-50 rounded" style="padding: 15px;">
+		<div class="row">
+      		<h2 class="dysplay-4 fw-bold text-center" style="margin-top: 40px; margin-bottom: 80px;">Ваш профиль</h2>
+      	</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-5 d-flex justify-content-center align-items-center">
+					{% if profile.profile_photo %}
+						<img class="resized-image" src="{{ profile.profile_photo.url }}" alt="Profile Photo">
+					{% else %}
+						<p>Фотография профиля отсутствует</p>
+					{% endif %}
+				</div>
+				<div class="col-7 mx-auto">
+					<div class="row">
+						<div class="col-6">
+							<p style="font-size: 20px; font-weight: bold">Фамилия</p>
+						</div>
+						<div class="col-6">
+							<p style="font-size: 20px"> {{ profile.last_name }} </p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-6">
+							<p style="font-size: 20px; font-weight: bold">Имя</p>
+						</div>
+						<div class="col-6">
+							<p style="font-size: 20px">{{ profile.first_name }}</p>
+						</div>
+					</div>
+					{% if profile.second_name %}
+						<div class="row">
+							<div class="col-6">
+								<p style="font-size: 20px; font-weight: bold">Отчество</p>
+							</div>
+							<div class="col-6">
+								<p style="font-size: 20px">{{ profile.second_name }}</p>
+							</div>
+						</div>
+					{% endif %}
+					<div class="row">
+						<div class="col-6">
+							<p style="font-size: 20px; font-weight: bold">Дата рождения</p>
+						</div>
+						<div class="col-6">
+							<p style="font-size: 20px">{{ profile.date_of_birth|date:"j F Y" }}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-6">
+							<p style="font-size: 20px; font-weight: bold">Пол</p>
+						</div>
+						<div class="col-6">
+							<p style="font-size: 20px">{{ profile.gender }}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-6">
+							<p style="font-size: 20px; font-weight: bold">Город</p>
+						</div>
+						<div class="col-6">
+							<p style="font-size: 20px">{{ profile.town }}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-6">
+							<p style="font-size: 20px; font-weight: bold">Номер телефона</p>
+						</div>
+						<div class="col-6">
+							<p style="font-size: 20px">{{ profile.phone_number }}</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<div class="col-md-6">
-			</br></br>
-			{% if profile.profile_photo %}
-			<style>
-    			.resized-image {
-        			width: 300px;
-                	height: auto;
-    			}
-			</style>
-			<img class="resized-image" src="{{ profile.profile_photo.url }}" alt="Profile Photo">
-			{% else %}
-			<p>Фотография профиля отсутствует</p>
-			{% endif %}
-			</div>
-			<div class="centred">
-			<a href="{% url 'edit_profile' %}" class="btn btn-primary">Редактировать профиль</a>
-	</div>
+		<div class="col-3 offset-md-7" style="margin-top: 60px; margin-bottom: 40px;">
+			<a href="{% url 'profile' %}?action=edit" class="btn btn-primary">Редактировать профиль</a>
+		</div>
 	</div>
 </div>
 
