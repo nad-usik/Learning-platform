@@ -2,7 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
-
+import random
+import os
+from django.conf import settings
 from PIL import Image
 # from django.db.models.signals import post_save
 
@@ -85,17 +87,17 @@ class CustomUser(AbstractUser):
         ('student', 'Ученик'),
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
-    last_name = models.CharField(max_length=50, null=True)
-    first_name = models.CharField(max_length=50, null=True)
+    last_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50)
     second_name = models.CharField(max_length=50, blank=True, null=True)
-    date_of_birth = models.DateField(null=True)
+    date_of_birth = models.DateField()
     GENDER_CHOICES = [
-        ('Male', 'Мужской'),
-        ('Female', 'Женский'),
+        ('Мужской', 'Мужской'),
+        ('Женский', 'Женский'),
     ]
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    town = models.CharField(max_length=255, blank=True, null=True)
-    phone_number = models.CharField(max_length=50, null=True)
+    town = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=50)
     profile_photo = models.ImageField(upload_to='images/profile_photo/', blank=True, null=True)
 
     USERNAME_FIELD = 'email'
@@ -103,10 +105,11 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
+
     def __str__(self):
         return f'{self.email}, {self.last_name} , {self.first_name}, {self.role}'
 
-    # Saving image
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.profile_photo:
@@ -116,3 +119,18 @@ class CustomUser(AbstractUser):
                 output_size = (400, 400)
                 img.thumbnail(output_size)
                 img.save(self.profile_photo.path)
+
+        elif self.first_name:
+            folder_path = ('images/profile_photo/')
+            if self.role == 'teacher' and self.gender == 'Женский':
+                image_files = [f'teacher_woman_{i}.png' for i in range(1, 3)]
+            elif self.role == 'teacher' and self.gender == 'Мужской':
+                image_files = [f'teacher_man_{i}.png' for i in range(1, 3)]
+            elif self.role == 'student' and self.gender == 'Женский':
+                image_files = [f'student_girl_{i}.png' for i in range(1, 3)]
+            elif self.role == 'student' and self.gender == 'Мужской':
+                image_files = [f'student_boy_{i}.png' for i in range(1, 3)]
+            default_photo = random.choice(image_files)
+            photo = folder_path + default_photo
+            self.profile_photo = photo
+            self.save()
