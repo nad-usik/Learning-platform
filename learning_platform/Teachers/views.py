@@ -1,12 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from Users.models import CustomUser
-from Students.models import Student
-from .forms import AddForm
+from Students.models import Students
+from Homework.models import Assignment
+from .forms import AddLessonForm
 from .models import *
 from django.db.models.functions import TruncDate
 from django.utils import timezone
-# from datetime import datetime
-
+from django.http import JsonResponse
 
 def teacher_dashboard(request):
 
@@ -14,49 +14,72 @@ def teacher_dashboard(request):
 
         current_datetime = timezone.now()
         profile = CustomUser.objects.get(email=request.user.email)
-        teacher = Teacher.objects.get(user_id=request.user)
-        lessons = Lesson.objects.filter(teacher_id=teacher.id, date__date=current_datetime.date(), date__gte=current_datetime, is_available=False).order_by('date')
+        teacher = Teachers.objects.get(user_id=request.user)
+        lessons = Lessons.objects.filter(teacher_id=teacher.id, date__date=current_datetime.date(), date__gte=current_datetime, is_available=False).order_by('date')
+        assignments = Assignment.objects.filter(teacher_id=teacher, handed=True, checked=False)
 
         if not lessons:
             any_available = False
         else:
             any_available = True
-            # registered_lessons = Lesson.objects.filter(lesson_id__in=lessons)
-            # student_profile = [(lesson.id, CustomUser.objects.get(id=Student.objects.get(id=lesson.student_id).user_id)) for lesson in registered_lessons]
-
-        return render(request, 'teacher_dashboard.html', {'profile': profile, 'lessons': lessons, 'is_available': any_available})
+           
+        return render(request, 'teacher_dashboard.html', {'action': 'dashboard','profile': profile, 'lessons': lessons, 'is_available': any_available, 'assignments': assignments})
 
     else:
         return redirect('login')
 
 
-def teacher_calendar(request):
-    # hours = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00',
-    #          '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
-    #          '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']
+def teacher_calendar(request, pk=None):
 
-    profile = CustomUser.objects.get(email=request.user.email)
-    teacher = Teacher.objects.get(user_id=request.user)
-    current_datetime = timezone.now()
-    dates = Lesson.objects.filter(teacher_id=teacher.id, date__gte=current_datetime).annotate(date_only=TruncDate('date')).values('date_only').distinct().order_by('date_only').values_list('date_only', flat=True)
-    lessons = Lesson.objects.filter(teacher_id=teacher.id, date__gte=current_datetime).order_by('date')
+    user = request.user
+    action = request.GET.get('action')
 
-    context = {'call': 'calendar', 'profile': profile, 'lessons': lessons, 'dates': dates}
-
-    return render(request, 'teacher_dashboard.html', context)
+    if action =='add':
+        return add_lesson(request)
+    elif action == 'delete':
+        return delete_lesson(request, pk)
+    else :
+        profile = CustomUser.objects.get(email=user.email)
+        teacher = Teachers.objects.get(user_id=user)
+        current_datetime = timezone.now()
+        unavailable_lessons = Lessons.objects.filter(teacher_id=teacher.id, is_available=False, date__gte=current_datetime).order_by('date')
+        all_lessons = Lessons.objects.filter(teacher_id=teacher.id, is_available=True, date__gte=current_datetime).order_by('date')
+        
+        context = {'action': 'calendar', 'profile': profile, 'unavailable_lessons': unavailable_lessons, 'all_lessons': all_lessons}
+        return render(request, 'teacher_calendar.html', context)
 
 
 def add_lesson(request):
-    form = AddForm(request.user.id)
+    form = AddLessonForm(request.user.id)
+    profile = CustomUser.objects.get(id=request.user.id)
     if request.user.is_authenticated:
         if request.method == 'POST':
-            form = AddForm(request.user.id, request.POST)
+            form = AddLessonForm(request.user.id, request.POST)
             if form.is_valid():
+                print("here")
                 lesson = form.save(commit=False)
-                lesson.teacher_id = Teacher.objects.get(user_id=request.user).id
+                lesson.teacher_id = Teachers.objects.get(user_id=request.user).id
                 form.save()
                 return redirect('teacher_calendar')
         else:
-            return render(request, 'add_lesson.html', {'form': form})
+            return render(request, 'add_lesson.html', {'action': 'calendar', 'form': form, 'profile': profile})
     else:
         return render(request, 'home.html', {})
+    
+
+def delete_lesson(request, pk):
+    lesson = get_object_or_404(Lessons, id=pk)
+    if request.method == 'POST':
+        lesson.delete_lesson()
+    return redirect(teacher_calendar)
+
+
+def show_students(request):
+    user = request.user
+    profile = CustomUser.objects.get(id=user.id)
+    teacher = Teachers.objects.get(user_id=user)
+    students_teachers = TeacherStudent.objects.filter(teacher_id=teacher).values_list('student_id', flat=True)
+    students = Students.objects.filter(id__in=students_teachers)
+
+    context = {'action': 'my_students', 'students': students, 'profile': profile}
+    return render(request, 'teacher_students.html', context)

@@ -1,30 +1,26 @@
 from django.shortcuts import render, redirect
-from .models import TeacherStudent, ChatMessages
+from .models import ChatMessages
 from Users.models import CustomUser
-from Students.models import Student
-from Teachers.models import Teacher
+from Students.models import Students
+from Teachers.models import Teachers, TeacherStudent
 from .forms import ChatMessageForm
 from django.http import JsonResponse
 import json
 from django.core.serializers import serialize
 from django.utils import timezone
-# from .forms import AddForm
-# from .models import *
-# from django.utils import timezone
-# from datetime import datetime
 
 
 def index(request):
     user = CustomUser.objects.get(email=request.user.email)
     if user.role == 'student':
-        teachers = TeacherStudent.objects.filter(student_id=Student.objects.get(user_id=user.id)).values_list(
+        teachers = TeacherStudent.objects.filter(student_id=Students.objects.get(user_id=user.id)).values_list(
             'teacher', flat=True)
-        connections = Teacher.objects.filter(id__in=teachers)
+        connections = Teachers.objects.filter(id__in=teachers)
 
     else:
-        students = TeacherStudent.objects.filter(teacher_id=Teacher.objects.get(user_id=user.id)).values_list(
+        students = TeacherStudent.objects.filter(teacher_id=Teachers.objects.get(user_id=user.id)).values_list(
             'student', flat=True)
-        connections = Student.objects.filter(id__in=students)
+        connections = Students.objects.filter(id__in=students)
     context = {'connections': connections,}
 
     return render(request, 'index.html', context)
@@ -35,20 +31,20 @@ def chat_view(request, pk):
     profile = CustomUser.objects.get(id=pk)
     rec_chat = ChatMessages.objects.filter(sender=profile, receiver=user)
     rec_chat.update(seen=True)
-    chats = ChatMessages.objects.all()
+    chats = ChatMessages.objects.all().order_by('time')
     form = ChatMessageForm()
 
     if user.role == 'student':
-        teachers = TeacherStudent.objects.filter(student_id=Student.objects.get(user_id=user.id)).values_list(
+        teachers = TeacherStudent.objects.filter(student_id=Students.objects.get(user_id=user.id)).values_list(
             'teacher', flat=True)
-        connections = Teacher.objects.filter(id__in=teachers)
-        # current_receiver = Teacher.objects.get(user=pk)
+        connections = Teachers.objects.filter(id__in=teachers)
+        # current_receiver = Teachers.objects.get(user=pk)
 
     else:
-        students = TeacherStudent.objects.filter(teacher_id=Teacher.objects.get(user_id=user.id)).values_list(
+        students = TeacherStudent.objects.filter(teacher_id=Teachers.objects.get(user_id=user.id)).values_list(
             'student', flat=True)
-        connections = Student.objects.filter(id__in=students)
-        # current_receiver = Student.objects.get(user=pk)
+        connections = Students.objects.filter(id__in=students)
+        # current_receiver = Students.objects.get(user=pk)
 
     if request.method == "POST":
         form = ChatMessageForm(request.POST)
@@ -89,17 +85,17 @@ def chat_notification(request):
     user = request.user
 
     if user.role == 'student':
-        teachers = TeacherStudent.objects.filter(student_id=Student.objects.get(user_id=user.id)).values_list(
+        teachers = TeacherStudent.objects.filter(student_id=Students.objects.get(user_id=user.id)).values_list(
             'teacher', flat=True)
-        connections = Teacher.objects.filter(id__in=teachers).values_list("user_id", flat=True)
-        # current_receiver = Teacher.objects.get(user=pk)
+        connections = Teachers.objects.filter(id__in=teachers).values_list("user_id", flat=True)
+        # current_receiver = Teachers.objects.get(user=pk)
 
     else:
-        students = TeacherStudent.objects.filter(teacher_id=Teacher.objects.get(user_id=user.id)).values_list(
+        students = TeacherStudent.objects.filter(teacher_id=Teachers.objects.get(user_id=user.id)).values_list(
             'student', flat=True)
-        connections = Student.objects.filter(id__in=students).values_list("user_id", flat=True)
-        # current_receiver = Student.objects.get(user=pk)
-    # print(connections)
+        connections = Students.objects.filter(id__in=students).values_list("user_id", flat=True)
+        # current_receiver = Students.objects.get(user=pk)
+
     array = []
     for item in connections:
         chats = ChatMessages.objects.filter(sender=item, receiver=user, seen=False)

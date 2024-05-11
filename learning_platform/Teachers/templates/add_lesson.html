@@ -1,41 +1,39 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 
+{% include 'teacher_dashboard_navbar.html'%}
 
-<header class="bg-dark py-5">
-	<div class="container px-4 px-lg-5 my-5">
-		<div class="text-center text-white">
-			<h1 class="display-4 fw-bolder">Добавить урок</h1>
-			<p class="lead fw-normal text-white-50 mb-0">Выберите время</p>
-		</div>
-	</div>
-</header>
-<div class="container">
-	<div class="row">
-		<center>
-			<div class="col-5">
-
-				<br/><br/>
-
-				<form method="POST" action="{% url 'add_lesson' %}">
+<div class="col-10 mx-auto bg-white rounded" style="padding: 30px; margin-top: 10px;">
+		<div class="row">
+			<h2 class="text-center" style="margin-top: 15px">Создать запись</h2>
+			<div class="col-6 mx-auto" style="margin-top: 30px;">
+				<form method="POST" action="{% url 'teacher_calendar' %}?action=add">
 					{% csrf_token %}
-                    {{ form.as_p }}
-					<button type="submit" class="btn btn-secondary">Добавить</button>
-
+					<div class="row">
+						<div class="form-floating col-12 mb-3">
+							{{form.subject}}
+							<label for="floatingInput" style="margin-left: 10px;">Предмет:</label> 
+						  </div>
+					</div>
+					<div class="row">
+						<div class="form-floating col-12 mb-3">
+							{{form.date}}
+							<label for="floatingInput" style="margin-left: 10px;">Время:</label> 
+						  </div>
+					</div>
+					<div class="row">
+						<div class="form-floating col-12 mb-3">
+							{{form.duration}}
+							<label for="floatingInput" style="margin-left: 10px;">Продолжительность:</label> 
+						  </div>
+					</div>
+					<div class="d-flex align-items-center justify-content-center" style="margin-top: 50px;">
+						<button type="submit" class="btn btn-primary">Добавить</button>
+					</div>
 				</form>
-				<br/><br/>
-
-
-				<br/><br/>
-				<br/><br/>
-				<br/><br/>
-				<br/><br/>
-				<br/><br/>
-				<br/><br/>
 			</div>
-		</center>
+		</div>
 	</div>
 </div>
 

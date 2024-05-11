@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% include messages %}
+
+{% block content %}
+
+{% include 'messages.html' %}
+
+<div class="container" style="padding: 100px">
+	<div class="container col-6 bg-white border border-0 border-secondary border-opacity-50 rounded" style="padding: 15px;">
+		<div class="row">
+			<h2 class="dysplay-4 fw-bold text-center" style="margin-top: 40px; margin-bottom: 50px;">Регистрация</h2>
+      	</div>
+		<div class="row">
+			<div class="col-10 mx-auto">
+				<form method="POST" action="{% url 'create_account' %}">
+					{% csrf_token %}
+
+					<div class="form-floating mb-3">
+						{{ form.email}}
+						<label for="floatingInput">Введите электронную почту</label>
+					</div>
+					<div class="form-floating mb-3">
+						{{form.role}}
+						<label for="floatingInput">Кто Вы?</label>
+					</div>
+					<div class="form-floating mb-3" style="margin-top: 30px;">
+						{{ form.password1 }}
+						<label for="floatingInput">Введите пароль</label>
+					</div>
+					<div class="form-floating mb-3" style="margin-top: 30px;">
+						{{ form.password2 }}
+						<label for="floatingInput">Повторите пароль</label>
+					</div>
+					<div class="d-flex justify-content-center align-items-center" style="margin-top: 50px; margin-bottom: 35px">
+						<button type="submit" class="btn btn-primary" style="padding: 10px">Зарегистрироваться</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

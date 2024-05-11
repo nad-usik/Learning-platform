@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% include messages %}
+
+{% block content %}
+
+{% include 'messages.html' %}
+{% include 'student_dashboard_navbar.html' %}
+
+{% if teachers == False %}
+<div class="col-10 mx-auto bg-white rounded" style="min-height: 500px; margin-top: 10px; padding: 30px; position: relative;">
+    <h3 class="text-center" style="margin-top: 50px;">На данный момент у вас нет преподавателей</h3>
+    <div class="position-absolute bottom-0 start-50 translate-middle-x d-flex align-items-center justify-content-center" style="padding: 30px;">
+        <a href="{% url 'slots' %}" class="btn btn-success" role="button">Начать учиться</a>
+    </div>
+</div>
+{% else %}
+<div class="col-10 mx-auto rounded" style="padding: 20px; margin-top: 10px; height: 500px; overflow-y: auto; max-height: 500px;">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for teacher in teachers %}
+        <div class="col">
+            <a href="#" class="list-group-item list-group-item-action bg-white border rounded" style="padding: 20px;margin: 10px;">
+                <div class="list-image">
+                    <img src="{{ teacher.user.profile_photo.url }}" alt="Profile Image">
+                </div>
+                <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ teacher.user.first_name }} {{ teacher.user.last_name }}</h5>
+            </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock %}

@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'Users.apps.UserConfig',
     'Home.apps.HomeConfig',
     'Students.apps.StudentConfig',
@@ -29,7 +30,6 @@ INSTALLED_APPS = [
     'Homework.apps.HomeworkConfig'
 ]
 
-# Change User model to CustomUser model
 AUTH_USER_MODEL = 'Users.CustomUser'
 
 MIDDLEWARE = [
@@ -69,7 +69,6 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "Learning_platform",
-        # "NAME": "TEST",
         "USER": "nad-usik",
         "PASSWORD": "0301usikova2003",
         "HOST": "127.0.0.1",
@@ -100,10 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 LANGUAGE_CODE = 'ru-RU'  # Установка языка на русский
-
-
-
-
 
 TIME_ZONE = 'Europe/Moscow'
 

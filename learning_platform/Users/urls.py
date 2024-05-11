@@ -4,6 +4,6 @@ from Users.views import *
 urlpatterns = [
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
-    path('registration/', register_user, name='register'),
+    path('create-account/', create_account, name='create_account'),
     path('profile/', profile, name='profile'),
 ]

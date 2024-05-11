@@ -1,0 +1,45 @@
+<div
+  class="col-10 bg-light mx-auto nav nav-tabs d-flex align-items-center justify-content-center rounded"
+  style="margin-top: 15px"
+>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      href="{% if is_teacher %} {% url 'student_task_list' %} {% else %} {% url 'student_dashboard' %} {% endif %}"
+      ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+      </svg></a>
+  </li>
+  <li class="nav-item">
+    {% if action == 'current' %}
+    <a
+      class="nav-link active"
+      aria-current="true"
+      href="{% url 'view_current_tasks' student.id %}"
+      >Текущие</a>
+    {% else %}
+    <a
+      class="nav-link"
+      href="{% url 'view_current_tasks' student.id %}"
+      >Текущие</a>
+    {% endif %}
+  </li>
+  <li class="nav-item">
+    {% if action == 'finished' %}
+      <a class="nav-link active" aria-current="true" href="{% url 'view_finished_tasks' student.id %}">Завершенные</a>
+    {% else %}
+      <a class="nav-link" href="{% url 'view_finished_tasks' student.id %}"
+        >Завершенные</a
+      >
+    {% endif %}
+  </li>
+  {% if is_teacher %}
+    <li class="nav-item">
+      {% if action == 'create' %}
+      <a class="nav-link active" aria-current="true" href="{% url 'create_task' student.id %}">Добавить задание</a>
+      {% else %}
+      <a class="nav-link" href="{% url 'create_task' student.id %}">Добавить задание</a>
+      {% endif %}
+    </li>
+  {% endif %}
+</div>

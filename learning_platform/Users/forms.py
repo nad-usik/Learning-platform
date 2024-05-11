@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser
-from Teachers.models import Subjects, Teacher
+from Teachers.models import Subjects, Teachers
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -75,6 +75,10 @@ class SubjectChoiceForm(forms.ModelForm):
     subjects = forms.ModelMultipleChoiceField(label='', queryset=Subjects.objects.all(), widget=forms.CheckboxSelectMultiple(attrs={'class': "form-check-input"}))
 
     class Meta:
-        model = Teacher
+        model = Teachers
         fields = ('subjects',)
         
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Текущий пароль'}))
+    new_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Новый пароль'}))

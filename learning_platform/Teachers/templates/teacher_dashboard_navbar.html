@@ -1,67 +1,54 @@
-<header class="bg-dark py-4">
-	<style>
-		.profile-image {
-			width: 120px;
-			height: 120px;
-			border-radius: 50%;
-			overflow: hidden;
-			margin: 0 auto;
-			margin-bottom: 10px;
-		}
-
-		.profile-image img {
-			width: 100%;
-			height: auto;
-			object-fit: cover;
-		}
-
-		.mycontainer {
-			width: 100%;
-			margin: 0 auto;
-			background-color: rgba(255, 255, 255, 0.8);
-			padding: 20px;
-		}
-
-		.mycontainer a {
-			display: inline-block;
-			margin-right: 50px;
-			text-decoration: none;
-			color: #333;
-			font-size: 16px;
-		}
-	</style>
-
+<header class="col-10 mx-auto bg-white py-4 rounded " style="margin-top: 20px;">
 	<div class="container px-4">
 		<div class="row gx-5 align-items-center justify-content-center">
 			<div class="col-lg-8 col-xl-7 col-xxl-6">
 				<div class="my-3 text-center text-xl-start">
 					{% if profile.profile_photo %}
-					<center>
 						<div class="profile-image">
 							<img src="{{ profile.profile_photo.url }}" alt="Profile Image">
 						</div>
-					</center>
 					{% else %}
-					<center>
-						<h1 class="center-text display-5 fw-bolder text-white mb-2">Dashboard</h1>
-					</center>
+						<h2 class="text-center display-5 fw-bolder">Dashboard</h2>
 					{%endif%}
 				</div>
-				<center>
-					<p class="mb-0" , style="font-weight: bold; font-size: 22px; color: rgb(255, 255, 255)">
+				<div class="text-center">
+					<p class="mb-0" style="font-weight: bold; font-size: 22px;">
 						{{ profile.first_name }} {{ profile.last_name }}</p>
-				</center>
+				</div>
 			</div>
 		</div>
 	</div>
 </header>
-<center>
-	<div class="mycontainer">
-		<a href="{% url 'teacher_dashboard' %}">Мой день</a>
-		<a href="{% url 'teacher_calendar' %}">Календарь</a>
-		<a href="{% url 'student_task_list' %}">Задания</a>
-		<a href="#">Статистика</a>
-		<a href="#">Мои ученики</a>
-	</div>
-</center>
+
+<div class="col-10 bg-light mx-auto nav nav-tabs align-items-center justify-content-center rounded" style="margin-top: 15px;">
+	<li class="nav-item">
+		{% if action == 'dashboard' %}
+			<a class="nav-link active" aria-current="page" href="{% url 'teacher_dashboard' %}">Мой день</a>
+		{% else %}
+			<a class="nav-link" aria-current="page" href="{% url 'teacher_dashboard' %}">Мой день</a>
+		{% endif %}
+	</li>
+	<li class="nav-item">
+		{% if action == 'calendar' %}
+			<a class="nav-link active" href="{% url 'teacher_calendar' %}">Календарь</a>
+		{% else %}
+			<a class="nav-link " href="{% url 'teacher_calendar' %}">Календарь</a>
+		{% endif %}
+	</li>
+	<li class="nav-item">
+		{% if action == 'homework' %}
+			<a class="nav-link active" href="{% url 'student_task_list' %}">Задания</a>
+		{% else %}
+			<a class="nav-link" href="{% url 'student_task_list' %}">Задания</a>
+		{% endif %}
+	</li>
+	<li class="nav-item">
+		{% if action == 'my_students' %}
+			<a class="nav-link active" href="{% url 'teacher_students' %}">Мои ученики</a>
+		{% else %}
+			<a class="nav-link" href="{% url 'teacher_students' %}">Мои ученики</a>
+		{% endif %}
+	</li>
+</div>
+	
 

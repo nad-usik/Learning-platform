@@ -1,8 +1,6 @@
 from django import forms
 from .models import Assignment
-from Chat.models import TeacherStudent
-from Students.models import Student 
-from Teachers.models import Teacher, Subjects
+from Teachers.models import Teachers, Subjects
 
 
 class AssignmentCreationForm(forms.ModelForm):
@@ -10,8 +8,8 @@ class AssignmentCreationForm(forms.ModelForm):
     deadline = forms.DateTimeField(label='',
                                widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}))
     attached_file = forms.FileField(label='', widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'inputGroupFile01'}), required=False)  # Добавляем поле для прикрепления файла
-    content = forms.CharField(label="", widget=forms.Textarea(attrs={'style': 'width: 100%; box-sizing: border-box; border: none; padding: 10px', 'rows': 2, 'placeholder': "Комментарий к заданию..."}))
-    attached_image = forms.ImageField(label='',
+    content = forms.CharField(label="", widget=forms.Textarea(attrs={'class': 'form-control', 'type': 'image', 'style': 'width: 100%; box-sizing: border-box; padding: 10px', 'rows': 2, 'placeholder': "Комментарий к заданию..."}))
+    attached_image = forms.ImageField(label='Выберите изображение',
                                      widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'inputGroupFile01'}),
                                      required=False)
     title = forms.CharField(label='', max_length=50,
@@ -24,7 +22,7 @@ class AssignmentCreationForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(AssignmentCreationForm, self).__init__(*args, **kwargs)
         
-        teacher = Teacher.objects.get(user_id=user)
+        teacher = Teachers.objects.get(user_id=user)
       
         subjects = teacher.subject.all()
         

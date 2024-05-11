@@ -1,28 +1,13 @@
 {% extends 'base.html' %} 
 {% include messages %} 
 {% block content %} 
-{% if messages %} 
-  {% for message in messages %}
-  <div
-    class="alert {% if message.tags == 'error' %} alert-warning {% else %} alert-success {% endif %} alert-dismissible fade show"
-    role="alert"
-  >
-    <strong>{{ message }}</strong>
-    <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    ></button>
-  </div>
-  {% endfor %} 
-{% endif %}
+{% include 'messages.html' %}
 
-<div class="container" style="margin-top: 50px;">
+<div class="container" style="margin-top: 40px; margin-bottom: 50px;">
 <div class="container col-7 bg-white border border-0 border-secondary border-opacity-50 rounded" style="padding: 10px;">
   <div class="row">
     <h2 class="text-center dysplay-4 fw-bold" style="margin-top: 35px; margin-bottom: 30px;">Ваш профиль</h2>
-    <div class="col-10 mx-auto" style="text-align: left">
+    <div class="col-10 mx-auto">
       <form
         method="POST"
         action="{% url 'profile' %}?action=edit"
@@ -63,7 +48,7 @@
             <label for="floatingInput" style="margin-left: 10px;">Номер телефона:</label>
           </div>
         </div>
-        <div class="mb-2" style="margin-top: 15px;">
+        <div class="mb-2" style="margin-top: 10px;">
           <label>Фото профиля:</label>
           {{profile_form.profile_photo}}
         </div>
@@ -77,13 +62,53 @@
           </div>
           {% endfor %} 
         {% endif %}
+        <p style="font-size: 20px; margin-bottom: 3px; margin-top: 15px">
+          Изменение пароля:
+        </p>
+        <div class="row" style="margin-top: 15px;">
+          <div class="form-floating col-6 mb-3">
+            {{password_form.old_password}}
+            <label for="floatingInput" style="margin-left: 10px;">Введите текущий пароль</label>
+          </div>
+          <div class="form-floating col-6 mb-3">
+            {{password_form.new_password}}
+            <label for="floatingInput" style="margin-left: 10px;">Введите новый пароль</label>
+          </div>
+        </div>
         <div
           class="d-flex justify-content-center align-items-center"
-          style="margin-top: 35px; margin-bottom: 35px"
+          style="margin-top: 25px; margin-bottom: 10px"
         >
           <button type="submit" class="btn btn-primary">Сохранить</button>
         </div>
       </form>
+      <a class="icon-link d-flex justify-content-center align-items-center" data-bs-toggle="modal" data-bs-target="#exampleModal" style="margin-bottom: 35px;">
+        Удалить аккаунт?
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-x" viewBox="0 0 16 16">
+          <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
+          <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708"/>
+        </svg>
+      </a>
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Подтвердите действие</h1>
+              <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+            </div>
+            <div class="modal-body">
+              Вы хотите удалить аккаунт?
+              После удаления аккаунта его восстановление невозможно
+            </div>
+            <div class="modal-footer">
+              <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</a>
+              <a type="button" href="{% url 'profile' %}?action=delete" class="btn btn-primary">Удалить</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </div>
   </div>
 </div>

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% include messages %}
+
+
+{% block content %}
+
+{% include 'messages.html' %}
+
+{% include 'student_dashboard_navbar.html' %}
+
+<div class="col-10 mx-auto bg-white rounded" style="min-height: 500px; margin-top: 10px; padding: 30px; position: relative;">
+    <div class="row">
+		{% if lessons %}
+        <div class="col-8 mx-auto">
+            <h3 class="text-center" style="margin-bottom: 15px;">Предстоящие занятия</h3>
+			<div style="overflow-y: auto; max-height: 325px;">
+				<table class="table">
+					<thead>
+					<tr>
+						<th>Дата</th>
+						<th>Время</th>
+						<th>Продолжительность</th>
+						<th>Предмет</th>
+                        <th>Преподаватель</th>
+					</tr>
+					</thead>
+					<tbody>
+						{% for lesson in lessons %}
+						<tr>
+							<td>{{ lesson.date|date:"j E" }}</td>
+							<td>{{ lesson.date|date:"H:i" }}</td>
+							<td>{{ lesson.duration }} минут</td>
+							<td>{{ lesson.subject.name }}</td>
+							<td>{{ lesson.teacher.user.last_name }} {{ lesson.teacher.user.first_name }} {{ lesson.teacher.user.second_name}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+            <div class="position-absolute bottom-0 start-50 translate-middle-x d-flex align-items-center justify-content-center" style="padding: 30px;">
+                <a href="{% url 'slots' %}" class="btn btn-primary" role="button">Найти занятия</a>
+            </div>
+		</div>
+		{% else %}
+		<h3 class="text-center" style="margin-bottom: 15px; color: rgb(80, 80, 80);">Предстоящие занятия</h3>
+		<div class="position-absolute bottom-50 start-50 translate-middle-x d-flex align-items-center justify-content-center">
+			<svg xmlns="http://www.w3.org/2000/svg" width="100" style="opacity: 75%;" height="100" fill="currentColor" class="bi bi-calendar-check" viewBox="0 0 16 16">
+				<path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+				<path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+			</svg>
+		</div>
+		<div class="position-absolute bottom-0 start-50 translate-middle-x d-flex align-items-center justify-content-center" style="padding: 30px;">
+			<a href="{% url 'slots' %}" class="btn btn-primary" role="button">Найти занятия</a>
+		</div>
+		{% endif %}
+	</div>
+</div>
+
+{% endblock %}	

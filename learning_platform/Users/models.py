@@ -54,14 +54,14 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
-        extra_fields.setdefault("date_of_birth", None)
+        extra_fields.setdefault("date_of_birth", "2003-01-03")
         extra_fields.setdefault("role", 'teacher')
-        extra_fields.setdefault("last_name", None)
-        extra_fields.setdefault("first_name", None)
+        extra_fields.setdefault("last_name", 'admin')
+        extra_fields.setdefault("first_name", 'admin')
         extra_fields.setdefault("gender", 'female')
-        extra_fields.setdefault("second_name", None)
-        extra_fields.setdefault("town", None)
-        extra_fields.setdefault("phone_number", None)
+        extra_fields.setdefault("second_name", 'admin')
+        extra_fields.setdefault("town", 'town')
+        extra_fields.setdefault("phone_number", '')
         extra_fields.setdefault("profile_photo", None)
 
         if extra_fields.get("is_staff") is not True:
@@ -90,7 +90,7 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=50)
     first_name = models.CharField(max_length=50)
     second_name = models.CharField(max_length=50, blank=True, null=True)
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(null=True)
     GENDER_CHOICES = [
         ('Мужской', 'Мужской'),
         ('Женский', 'Женский'),

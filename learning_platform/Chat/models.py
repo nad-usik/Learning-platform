@@ -1,19 +1,7 @@
 from django.db import models
 from Users.models import CustomUser
-from Teachers.models import Teacher
-from Students.models import Student
 from django.utils import timezone
 
-
-class TeacherStudent(models.Model):
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-
-    @classmethod
-    def create_relation(cls, student, teacher):
-        relation = cls(teacher=teacher, student=student)
-        relation.save()
-        return relation
 
 
 class ChatMessages(models.Model):

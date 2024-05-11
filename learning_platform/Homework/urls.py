@@ -8,4 +8,5 @@ urlpatterns = [
     path('task_content/<int:pk>', view_content, name='view_content'),
     path('create_task/<int:pk>', create_task, name='create_task'),
     path('task_contnet/check/<int:pk>', check_task, name='check_task'),
+    path('task_contnet/cancel/<int:pk>', cancel_response, name='cancel_response'),
 ]

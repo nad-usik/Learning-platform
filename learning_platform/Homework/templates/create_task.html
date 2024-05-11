@@ -1,44 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<br><br>
-<div class="container px-4 col-8">
-    <center>
-    <div class="profile-image">
-        <img src="{{ student.user.profile_photo.url }}" alt="...">
-    </div>
-    <h3>{{student.user.first_name}} {{student.user.last_name}}</h3>
-</center>
-<br>
-    <div class="list-group">
-        <div class="card text-center">
-            <div class="card-header">
-              <ul class="nav nav-tabs card-header-tabs">
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'view_current_tasks' student.id %}">Текущие</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'view_finished_tasks' student.id %}">Завершенные</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link active" aria-current="true" href="{% url 'create_task' student.id %}">Добавить задание</a>
-                </li>
-              </ul>
-            </div>
-            <div class="card-body">
-                <form method="POST" action="{% url 'create_task' student.id %}" enctype="multipart/form-data">
-                    {% csrf_token %}
-                
-                    {{ form.as_p }}
-                    <br><br>
-                    <center>
-                    <button type="submit" class="btn btn-secondary">Отправить</button>
-                </center>
-                </form>
-            </div>
-          </div>
+{% include 'student_card.html' %}
+{% include 'task_navbar.html' %}
 
+<div class="col-10 bg-white mx-auto" style="height: auto; margin-top: 10px; padding-top: 30px; padding-bottom: 10px;">
+  <div class="col-8 mx-auto text-center">
+      <form method="POST" action="{% url 'create_task' student.id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="margin:15px;">
+          {{form.subject}}
+        </div>
+        <div style="margin:15px;">
+          {{ form.title }}
+        </div>
+        <div style="margin:15px;">
+          {{ form.deadline }}
+        </div>
+        <div style="margin:15px;">
+          {{ form.content }}
+        </div>
+        <div style="text-align: left; margin: 15px;">
+          <lable>Выберите файл:</lable>
+          {{ form.attached_file}}
+        </div>
+        <div style="text-align: left; margin: 15px;">
+          <lable>Выберите изображение:</lable>
+          {{form.attached_image}}
+        </div>
+        <div style="padding: 20px;">
+          <button type="submit" class="btn btn-primary">Отправить</button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
-<br><br><br><br>
+
 {% endblock %}

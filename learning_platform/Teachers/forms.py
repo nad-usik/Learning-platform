@@ -1,20 +1,20 @@
-from .models import Teacher, Subjects, Lesson
+from .models import Teachers, Subjects, Lessons
 from django import forms
 
 
-class AddForm(forms.ModelForm):
+class AddLessonForm(forms.ModelForm):
     date = forms.DateTimeField(label='',
                                widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}))
     duration = forms.IntegerField(label='', widget=forms.TextInput(
         attrs={'type': 'number', 'class': 'form-control', 'placeholder': 'Продолжительность в минутах'}))
 
     class Meta:
-        model = Lesson
+        model = Lessons
         fields = ('subject', 'date', 'duration')
 
     def __init__(self, teacher_id, *args, **kwargs):
-        super(AddForm, self).__init__(*args, **kwargs)
-        teacher = Teacher.objects.get(user_id=teacher_id)
+        super(AddLessonForm, self).__init__(*args, **kwargs)
+        teacher = Teachers.objects.get(user_id=teacher_id)
         subjects = teacher.subject.all()
         subject_choices = [(subject.id, subject.name) for subject in subjects]
 

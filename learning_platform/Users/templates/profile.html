@@ -2,15 +2,7 @@
 {% include messages %}
 
 {% block content %}
-
-{% if messages %}
-	{% for message in messages %}
-	<div class="alert {% if message.tags == 'error' %} alert-warning {% else %} alert-success {% endif %} alert-dismissible fade show" role="alert">
-		<strong>{{ message }}</strong>
-		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
-	{% endfor %}
-{% endif %}
+{% include 'messages.html' %}
 
 
 <div class="container" style="padding: 50px;">
@@ -60,7 +52,7 @@
 							<p style="font-size: 20px; font-weight: bold">Дата рождения</p>
 						</div>
 						<div class="col-6">
-							<p style="font-size: 20px">{{ profile.date_of_birth|date:"j F Y" }}</p>
+							<p style="font-size: 20px">{{ profile.date_of_birth|date:"j E Y" }}</p>
 						</div>
 					</div>
 					<div class="row">
