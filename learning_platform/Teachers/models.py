@@ -44,6 +44,7 @@ class Lessons(models.Model):
     teacher = models.ForeignKey(Teachers, on_delete=models.CASCADE)
     date = models.DateTimeField()
     duration = models.IntegerField()
+    cost = models.IntegerField()
     is_available = models.BooleanField(default=True)
     student = models.ForeignKey(Students, on_delete=models.CASCADE, null=True, blank=True)
 

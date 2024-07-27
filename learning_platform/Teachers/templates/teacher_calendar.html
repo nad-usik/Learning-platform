@@ -10,7 +10,7 @@
 <div class="col-10 mx-auto" style="margin-top: 10px">
     <div class="row">
         <div class="col-md-6">
-            <div class="bg-white rounded" style="height: 500px; padding: 30px; position: relative;">
+            <div class="bg-white rounded" style="height: 500px; padding: 20px; position: relative;">
 				{% if unavailable_lessons %}
                 <h3 class="text-center" style="margin-bottom: 15px;">Запланированные</h3>
 				<div style="overflow-y: auto; max-height: 325px;">
@@ -21,7 +21,8 @@
 							<th>Время</th>
 							<th>Предмет</th>
 							<th>Студент</th>
-							<th>Продолжительность</th>
+							<th>Длительность</th>
+							<th>Стоимость</th>
 						</tr>
 						</thead>
 						<tbody>
@@ -30,8 +31,9 @@
 								<td>{{ lesson.date|date:"j E" }}</td>
 								<td>{{ lesson.date|date:"H:i" }}</td>
 								<td>{{ lesson.subject.name }}</td>
-								<td>{{ lesson.student.user.first_name }} {{ lesson.student.user.last_name }}</td>
+								<td><a class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{% url 'view_student_profile' lesson.student.pk %}">{{ lesson.student.user.first_name }} {{ lesson.student.user.last_name }}</a></td>
 								<td>{{ lesson.duration }} минут</td>
+								<td>{{ lesson.cost }} рублей</td>
 							</tr>
 							{% endfor %}
 						</tbody>
@@ -58,7 +60,8 @@
 							<th>Дата</th>
 							<th>Время</th>
 							<th>Предмет</th>
-							<th>Продолжительность</th>
+							<th>Длительность</th>
+							<th>Стоимость</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -69,9 +72,10 @@
 						<td>{{ lesson.date|date:"H:i" }}</td>
 						<td>{{ lesson.subject.name }}</td>
 						<td>{{ lesson.duration }} минут</td>
+						<td>{{ lesson.cost }} рублей</td>
 						<form method="POST" action="{% url 'delete_lesson' lesson.id%}?action=delete">
 							{% csrf_token %}
-						<td><button type="submit" class="btn-close" aria-label="Close"></button></td>
+						<td><button type="submit" class="btn-close " aria-label="Close"></button></td>
 					</form>
 					</tr>
 					{% endfor %}

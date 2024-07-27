@@ -7,10 +7,11 @@ class AddLessonForm(forms.ModelForm):
                                widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}))
     duration = forms.IntegerField(label='', widget=forms.TextInput(
         attrs={'type': 'number', 'class': 'form-control', 'placeholder': 'Продолжительность в минутах'}))
-
+    cost = forms.IntegerField(label='', widget=forms.TextInput(
+        attrs={'type': 'number', 'class': 'form-control', 'placeholder': 'Стоимость'}))
     class Meta:
         model = Lessons
-        fields = ('subject', 'date', 'duration')
+        fields = ('subject', 'date', 'duration', 'cost')
 
     def __init__(self, teacher_id, *args, **kwargs):
         super(AddLessonForm, self).__init__(*args, **kwargs)

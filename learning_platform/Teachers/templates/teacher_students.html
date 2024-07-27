@@ -24,7 +24,7 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for student in students %}
         <div class="col">
-            <a href="#" class="list-group-item list-group-item-action bg-white border rounded" style="padding: 20px;margin: 10px;">
+            <a href="{% url 'view_student_profile' student.pk %}" class="list-group-item list-group-item-action bg-white border rounded" style="padding: 20px;margin: 10px;">
                 <div class="list-image">
                     <img src="{{ student.user.profile_photo.url }}" alt="Profile Image">
                 </div>

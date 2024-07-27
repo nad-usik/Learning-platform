@@ -83,3 +83,11 @@ def show_students(request):
 
     context = {'action': 'my_students', 'students': students, 'profile': profile}
     return render(request, 'teacher_students.html', context)
+
+def view_profile(request, pk):
+
+    student = Students.objects.get(id=pk)
+    profile = CustomUser.objects.get(id=student.user_id)
+
+    context = {'profile': profile, 'action': 'student'}
+    return render(request,'profile.html', context)
