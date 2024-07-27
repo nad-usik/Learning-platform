@@ -19,7 +19,7 @@ def student_dashboard(request):
     profile = CustomUser.objects.get(email=request.user.email)
     current_datetime = timezone.now()
     today_lessons = Lessons.objects.filter(id__in=lessons, date__date=current_datetime)
-    current_assignments = Assignment.objects.filter(student_id=student.id, handed=False, deadline__gte=current_datetime)
+    current_assignments = Assignment.objects.filter(student_id=student.id, handed=False, deadline__gte=current_datetime).order_by('deadline')
 
     if not today_lessons:
         plans = False
@@ -46,9 +46,10 @@ def register_for_class(request, pk):
 @login_required
 def student_calendar(request):
 
+    current_datetime = timezone.now()
     profile = CustomUser.objects.get(email=request.user.email)
     student = Students.objects.get(user=request.user)
-    lessons = Lessons.objects.filter(student_id=student.id).order_by('date')
+    lessons = Lessons.objects.filter(student_id=student.id, date__gte=current_datetime).order_by('date')
 
     context = {'action': 'calendar', 'lessons': lessons, 'profile': profile, 'student': student}
 
@@ -57,23 +58,35 @@ def student_calendar(request):
 
 def slots(request):
 
-    current_datetime = timezone.now()
-    lessons = Lessons.objects.filter(is_available=True, date__gte=current_datetime).order_by(
-        'date')
-    
-    if not lessons:
-        available_classes = False
-        context = {'available_classes': available_classes}
-    else:
-        available_classes = True
-        context = {'lessons': lessons, 'available_classes': available_classes}
+    action = request.GET.get('action')
 
-    return render(request, 'student_slots_list.html', context)
+    if action == 'search':
+        return search_subject(request)
+    
+    else:
+        current_datetime = timezone.now()
+        student = Students.objects.get(user_id=request.user.id)
+        teachers_students = TeacherStudent.objects.filter(student_id=student).values_list('teacher_id', flat=True)
+        teachers = Teachers.objects.filter(id__in=teachers_students).values_list('id', flat=True)
+        
+        lessons = Lessons.objects.filter(is_available=True, date__gte=current_datetime).order_by('date')
+
+        if not lessons:
+            available_classes = False
+            context = {'available_classes': available_classes}
+        else:
+            available_classes = True
+            context = {'lessons': lessons, 'teachers': teachers, 'available_classes': available_classes}
+
+        return render(request, 'student_slots_list.html', context)
 
 
 def search_subject(request):
     current_datetime = timezone.now()
     if request.method == 'POST':
+        student = Students.objects.get(user_id=request.user.id)
+        teachers_students = TeacherStudent.objects.filter(student_id=student).values_list('teacher_id', flat=True)
+        teachers = Teachers.objects.filter(id__in=teachers_students).values_list('id', flat=True)
         searched = request.POST['search']
         subject = Subjects.objects.get(name__contains=searched)
         lessons = Lessons.objects.filter(is_available=True, date__gte=current_datetime, subject_id=subject.id).order_by('date')
@@ -82,14 +95,13 @@ def search_subject(request):
             context = {'available_classes': available_classes}
         else:
             available_classes = True
-            context = {'lessons': lessons, 'available_classes': available_classes}
+            context = {'lessons': lessons, 'teachers': teachers, 'available_classes': available_classes}
         return render(request, 'student_slots_list.html', context)
     else:
         return HttpResponseRedirect(reverse('slots'))
 
 
 def show_teachers(request):
-
     user = request.user
     student = Students.objects.get(user_id=user)
     teachers_students = TeacherStudent.objects.filter(student_id=student).values_list('teacher_id', flat=True)
@@ -97,3 +109,11 @@ def show_teachers(request):
 
     context = {'action': 'my_teachers', 'teachers': teachers, 'student': student}
     return render(request, 'student_teachers.html', context)
+
+def view_profile(request, pk):
+
+    teacher = Teachers.objects.get(id=pk)
+    profile = CustomUser.objects.get(id=teacher.user_id)
+
+    context = {'profile': profile, 'action': 'teacher'}
+    return render(request,'profile.html', context)
