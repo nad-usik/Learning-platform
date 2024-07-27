@@ -54,7 +54,18 @@
 
 .people-list .chat-list li .name {
     font-size: 15px
+    
 }
+
+.people-list a {
+        text-decoration: none;
+    }
+    .people-list a:hover {
+        text-decoration: none;
+    }
+    .people-list .fw-bold {
+        text-decoration: none;
+    }
 
 .people-list .chat-list img {
 	width: 50px;
@@ -271,19 +282,15 @@
 					<ul class="list-unstyled chat-list mt-2 mb-0">
 						{% for user in connections %}
 						<a href="{% url 'chat_view' user.user.pk %}">
-							<li id="chat-list" class="" style="display: flex; align-items: center;">
-                                <div class="row">
-                                    <div class="col" style="display: flex; justify-content: center; align-items: center;">
-                                        <img src="{{ user.user.profile_photo.url }}" alt="avatar">
-                                    </div>
-								    <div class="col about" style="display: flex; justify-content: center; align-items: center;">
-									    <div class="" style="color: black;">{{ user.user.first_name }} {{ user.user.last_name }}</div>                                    
-								    </div>
-                                    <div class="col" style="display: flex; justify-content: center; align-items: center;">
-                                        <span id="notification" class="badge text-bg-primary" style="margin-left: 25px;">0</span>
-                                    </div>          
+                            <li id="chat-list" class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="">
+                                    <img src="{{ user.user.profile_photo.url }}" alt="avatar">
                                 </div>
-							</li>
+                                <div class="ms-2">
+                                  <div class="no-underline fw-bold text-center" style="color: black;">{{ user.user.first_name }} {{ user.user.last_name }}</div>
+                                </div>
+                                <span  id="notification" class="badge text-bg-dark rounded-pill">0</span>
+                            </li>
 						</a>
 						{% endfor %}
 					</ul>
@@ -305,7 +312,11 @@
 		</div>
 	</div>
 </div>
-
+<style>
+    .no-underline {
+        text-decoration: none !important;
+    }
+</style>
 <script>
 
     setInterval(get_notification, 1000)
