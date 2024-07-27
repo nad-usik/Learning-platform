@@ -4,7 +4,7 @@
 {% include 'student_card.html' %}
 {% include 'task_navbar.html' %}
 
-<div class="col-10 bg-white mx-auto" style="height: auto; margin-top: 10px; padding-top: 30px; padding-bottom: 10px;">
+<div class="col-10 bg-white mx-auto" style="height: auto; margin-top: 10px; padding-top: 30px; padding-bottom: 10px; margin-bottom: 20px">
   <div class="col-8 mx-auto text-center">
       <form method="POST" action="{% url 'create_task' student.id %}" enctype="multipart/form-data">
         {% csrf_token %}

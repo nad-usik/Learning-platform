@@ -82,7 +82,7 @@ def view_finished_tasks(request, pk):
     
     print(assignments)
 
-    context = {'action': 'finished','profile': user, 'assignments': assignments, 'student': student, 'is_teacher': is_teacher}
+    context = {'action': 'finished', 'current_date': current_date, 'profile': user, 'assignments': assignments, 'student': student, 'is_teacher': is_teacher}
     return render(request, 'finished_tasks.html', context)
 
 

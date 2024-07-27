@@ -11,8 +11,8 @@
     {% for assignment in assignments %}
     <div class="col">
       <a href="{% url 'view_content' assignment.id %}" class="list-group-item list-group-item-action bg-white border rounded" style="padding: 20px;margin: 10px;">  
-        <h5>{{assignment.title}}</h5>
-        <p >Срок закончился {{assignment.deadline|date:"j E Y" }} в {{assignment.deadline|date:"H:i"}}</p>
+        <h5>{{assignment.subject.name|capfirst }}: {{assignment.title}}</h5>
+        <p >{% if assignment.deadline < current_date %} Срок закончился {% else %} Срок закончится {% endif %} {{assignment.deadline|date:"j E Y" }} в {{assignment.deadline|date:"H:i"}}</p>
         {% if assignment.handed == False %}
           <span class="badge rounded-pill bg-danger">Не сдано</span>
         {% elif assignment.checked == True %}

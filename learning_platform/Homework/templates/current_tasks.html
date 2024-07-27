@@ -38,9 +38,9 @@
             Срок заканчивается {{assignment.deadline|date:"j E Y" }} в {{assignment.deadline|date:"H:i"}}
             </p>
             {% if assignment.handed == True %}
-              <span class="badge rounded-pill bg-success">Сдано</span>
+              <span class="badge rounded-pill bg-success text-dark">Сдано</span>
             {% else %}
-              <span class="badge rounded-pill bg-warning">Не сдано</span>
+              <span class="badge rounded-pill bg-warning text-dark">Не сдано</span>
             {% endif %}        
         </div>
       </a>
