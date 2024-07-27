@@ -3,10 +3,9 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 import random
-import os
-from django.conf import settings
+# import os
+# from django.conf import settings
 from PIL import Image
-# from django.db.models.signals import post_save
 
 
 class CustomUserManager(BaseUserManager):
@@ -27,7 +26,7 @@ class CustomUserManager(BaseUserManager):
     ):
         if not email:
             raise ValueError(_("The Email must be set"))
-        email = self.normalize_email(email)  # lowercase the domain
+        email = self.normalize_email(email) 
         user = self.model(
             email=email,
             role=role,
@@ -41,7 +40,7 @@ class CustomUserManager(BaseUserManager):
             profile_photo=profile_photo,
             **extra_fields
         )
-        user.set_password(password)  # hash raw password and set
+        user.set_password(password)
         user.save()
         return user
 

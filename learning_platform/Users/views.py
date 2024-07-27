@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
+
 from .forms import SignUpForm, EmailLoginForm, ProfileForm, SubjectChoiceForm, ChangePasswordForm
 from .models import CustomUser
 from Students.models import Students
@@ -36,6 +37,7 @@ def create_account(request):
                     Teachers.objects.create(user=user)
                 elif role == 'student':
                     Students.objects.create(user=user)
+                    
                 return redirect(reverse('profile') + '?action=create')
             else:
                 messages.error(request, ("Ошибка! Попробуйте снова"))
@@ -77,8 +79,8 @@ def create_profile(request):
             messages.error(request, ("Ошибка! Попробуйте снова"))
             return redirect(reverse('profile') + '?action=create')
     else:
-        return render(request, 'create_profile.html', {'profile_form': profile_form, 'subject_form': subject_form})
-        
+        return render(request, 'create_profile.html', {'profile_form': profile_form, 'subject_form': subject_form})     
+
 
 def edit_profile(request):
     user = request.user
@@ -142,6 +144,7 @@ def delete_account(request):
     messages.success(request, ("Ваш аккаунт успешно удалён!"))
     return redirect('/')
 
+
 def profile(request):
     user = request.user
 
@@ -170,7 +173,7 @@ def login_user(request):
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, ("Вы вошли в аккаунт!"))
+                messages.success(request, ("Вы успешно вошли в аккаунт!"))
                 if user.role == 'student':
                     return student_dashboard(request)
                 elif user.role == 'teacher':
@@ -179,7 +182,7 @@ def login_user(request):
                 else:
                     return redirect('home')
             else:
-                messages.error(request, ("Ошибка! Повторите попытку"))
+                messages.error(request, ("Ошибка! Неверная почта или пароль"))
                 return redirect('login')
         else:
             messages.error(request, ("Ошибка! Повторите попытку"))
@@ -191,4 +194,4 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     messages.success(request, ("Вы вышли из аккаунта"))
-    return redirect('/')
+    return redirect('login')

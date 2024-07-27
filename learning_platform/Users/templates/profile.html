@@ -8,27 +8,32 @@
 <div class="container" style="padding: 50px;">
 	<div class="container  bg-white border border-0 border-secondary border-opacity-50 rounded" style="padding: 15px;">
 		<div class="row">
-      		<h2 class="dysplay-4 fw-bold text-center" style="margin-top: 40px; margin-bottom: 80px;">Ваш профиль</h2>
+			{% if action == 'teacher' %}
+			<h2 class="dysplay-4 fw-bold text-center" style="margin-top: 40px; margin-bottom: 80px;">Профиль преподавателя</h2>
+			{% elif action == 'student' %}
+			<h2 class="dysplay-4 fw-bold text-center" style="margin-top: 40px; margin-bottom: 80px;">Профиль студента</h2>
+			{% else %}
+			<h2 class="dysplay-4 fw-bold text-center" style="margin-top: 40px; margin-bottom: 80px;">Ваш профиль</h2>
+			{% endif %}
       	</div>
-
 		<div class="container">
 			<div class="row">
 				<div class="col-5 d-flex justify-content-center align-items-center">
 					{% if profile.profile_photo %}
-						<img class="resized-image" src="{{ profile.profile_photo.url }}" alt="Profile Photo">
+						<img class="resized-image" src="{{ profile.profile_photo.url }}">
 					{% else %}
 						<p>Фотография профиля отсутствует</p>
 					{% endif %}
 				</div>
 				<div class="col-7 mx-auto">
-					<div class="row">
-						<div class="col-6">
-							<p style="font-size: 20px; font-weight: bold">Фамилия</p>
-						</div>
-						<div class="col-6">
-							<p style="font-size: 20px"> {{ profile.last_name }} </p>
-						</div>
+				<div class="row">
+					<div class="col-6">
+						<p style="font-size: 20px; font-weight: bold">Фамилия</p>
 					</div>
+					<div class="col-6">
+						<p style="font-size: 20px"> {{ profile.last_name }} </p>
+					</div>
+				</div>
 					<div class="row">
 						<div class="col-6">
 							<p style="font-size: 20px; font-weight: bold">Имя</p>
@@ -82,10 +87,13 @@
 				</div>
 			</div>
 		</div>
-
 		<div class="col-3 offset-md-7" style="margin-top: 60px; margin-bottom: 40px;">
-			<a href="{% url 'profile' %}?action=edit" class="btn btn-primary">Редактировать профиль</a>
-		</div>
+			{% if action == 'teacher' or action == 'student' %}
+				<a href="{% url 'chat_view' profile.pk %}" class="btn btn-primary">Написать</a>
+			{% else %}
+				<a href="{% url 'profile' %}?action=edit" class="btn btn-primary">Редактировать профиль</a>
+			{% endif %}
+			</div>
 	</div>
 </div>
 
