@@ -23,3 +23,39 @@
 - Python 3.8+
 - Django 3.2+
 - PostgreSQL
+
+## Установка
+
+1. **Установка репозитория**:
+```bash
+git clone https://github.com/nad-usik/Learning-platform.git
+cd Learning-platform
+```
+2. **Создание и активация виртуального окружения**:
+  ```bash
+python -m venv venv
+source venv/bin/activate  # Для Windows используйте `venv\Scripts\activate`
+```
+3. **Установка зависимостей**:
+```bash
+pip install -r requirements.txt
+```
+4. **Настройка базы данных**:
+   
+- Откройте pgAdmin 4
+- Создайте базу данных для проекта
+- Обновите настройки DATABASES в файле
+     
+5. **Применение миграций**:
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+6. **Создание суперпользователя**:
+```bash
+python manage.py createsuperuser
+```
+7. **Запуск сервера разработки**:
+```bash
+python manage.py runserver
+```
